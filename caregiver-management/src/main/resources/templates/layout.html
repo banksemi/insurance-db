@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title> 홈페이지 타이틀 </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <link rel="stylesheet" th:href="@{/common/default.css}" type="text/css">
+        <link rel="stylesheet" th:href="@{/common/navigation.css}" type="text/css">
+        <link media="print" rel="stylesheet" th:href="@{/common/print.css}" type="text/css">
+        <link rel="stylesheet" th:href="@{/common/jquery-ui.css}">
+
+        <script th:src="@{/common/jquery-3.3.1.js}"></script>
+        <script th:src="@{/common/default.js}"></script>
+        <script th:src="@{/common/jquery.alphanum.js}"></script>
+        <script th:src="@{/common/jquery-ui.min.js}"></script>
+        <script th:src="@{/common/jquery.actual.min.js}"></script>
+        <script th:src="@{/common/jquery.ui.position.js}"></script>
+    </head>
+
+    <body>
+        <header th:insert="~{/fragments/header :: header}"></header>
+        <nav th:insert="~{/fragments/navigation :: navigation}"></nav>
+        <section id="content">
+            <div class="print_info">업체명: {{ request.user.name }}
+            </div>
+            <main layout:fragment="content">
+
+            </main>
+            <div style="height:34px; float: left; width: 100%;">
+            </div>
+        </section>
+        <footer th:insert="~{/fragments/footer :: footer}"></footer>
+    </body>
+</html>
+
+
+
