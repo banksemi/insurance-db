@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://easylab:3306/caregiver_dev
+    username: spring_dev
+    password: LocalPass00!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
