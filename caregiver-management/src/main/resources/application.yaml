@@ -9,4 +9,5 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    properties:
+      format_sql: true
