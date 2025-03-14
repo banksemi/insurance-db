@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Getter
 @Table(name = "users")  // 테스트시 사용하는 H2 데이터베이스에서 "user"는 예약어이므로 다른 이름을 사용해야함.
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 외부에서 무분별한 new User()을 막자
 // @Builder 을 쓰면 @AllArgsConstructor 을 써야하는데 필드 순서에 의존하므로 위험하다.
@@ -11,12 +12,11 @@ import lombok.*;
 public class User {
     @Id
     @GeneratedValue
-    @Getter
     @Column(name="user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id")
+    @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
 
     @Column(name="login_id", nullable = false, unique = true)

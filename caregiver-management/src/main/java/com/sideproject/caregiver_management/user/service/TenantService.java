@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 
 public interface TenantService {
     Long createTenant(String name);
-    Long createUser(long tenantId, UserCreateRequest userCreateRequest);
+    Long createUser(Long tenantId, UserCreateRequest userCreateRequest);
 }

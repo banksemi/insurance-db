@@ -4,6 +4,7 @@ import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
+import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TenantServiceImpl implements TenantService {
     private final TenantRepository tenantRepository;
+    private final PasswordService passwordService;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -27,8 +30,17 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    public Long createUser(long tenantId, UserCreateRequest userCreateRequest) {
-        User user = User.builder().build();
+    @Transactional
+    public Long createUser(Long tenantId, UserCreateRequest userCreateRequest) {
+        Tenant tenant = tenantRepository.findOne(tenantId);
+        String encodedPassword = passwordService.encode(userCreateRequest.getPassword());
+        User user = User.builder()
+                .tenant(tenant)
+                .loginId(userCreateRequest.getLoginId())
+                .password(encodedPassword)
+                .name(userCreateRequest.getName())
+                .build();
+        userRepository.save(user);
         return user.getId();
     }
 }
