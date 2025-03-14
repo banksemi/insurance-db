@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.user.service;
+package com.sideproject.caregiver_management.user.service.password;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,12 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
-public class SHA256PasswordService implements PasswordService {
+public class SHA256PasswordAlgorithm implements PasswordAlgorithm {
+    @Override
+    public String getPrefix() {
+        return "sha256";
+    }
+
     @Override
     public String encode(String rawPassword) {
         try {
@@ -26,10 +31,5 @@ public class SHA256PasswordService implements PasswordService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 Algorithm not found", e);
         }
-    }
-
-    @Override
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return encode(rawPassword).equals(encodedPassword);
     }
 }
