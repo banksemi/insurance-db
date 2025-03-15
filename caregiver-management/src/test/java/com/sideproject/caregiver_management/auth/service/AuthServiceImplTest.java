@@ -1,5 +1,7 @@
 package com.sideproject.caregiver_management.auth.service;
 
+import com.sideproject.caregiver_management.auth.dto.LoginResponse;
+import com.sideproject.caregiver_management.auth.exception.LoginIdNotMatchException;
 import com.sideproject.caregiver_management.auth.exception.PasswordNotMatchException;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
@@ -23,9 +25,9 @@ class AuthServiceImplTest {
     @Test
     @Transactional
     void login() {
-        Long tenentId = tenantService.createTenant("test");
+        Long tenantId = tenantService.createTenant("test");
         Long userId1 = tenantService.createUser(
-                tenentId,
+                tenantId,
                 UserCreateRequest
                         .builder()
                         .loginId("test")
@@ -34,7 +36,7 @@ class AuthServiceImplTest {
                         .build()
         );
         Long userId2 = tenantService.createUser(
-                tenentId,
+                tenantId,
                 UserCreateRequest
                         .builder()
                         .loginId("test2")
@@ -42,12 +44,13 @@ class AuthServiceImplTest {
                         .name("test2")
                         .build()
         );
-        User login_user = authService.login("test", "test12");
-        assertEquals(userId1, login_user.getId());
+        LoginResponse response1 = authService.login("test", "test12");
+        assertEquals(userId1, response1.getUserId());
 
-        User login_user2 = authService.login("test2", "test12");
-        assertEquals(userId2, login_user2.getId());
+        LoginResponse response2 = authService.login("test2", "test12");
+        assertEquals(userId2, response2.getUserId());
 
+        assertThrows(LoginIdNotMatchException.class, () -> authService.login("new_user", "test12"));
         assertThrows(PasswordNotMatchException.class, () -> authService.login("test", "test1"));
         assertThrows(PasswordNotMatchException.class, () -> authService.login("test", ""));
         assertThrows(NullPointerException.class, () -> authService.login("test", null));

@@ -7,6 +7,7 @@ import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.exception.DuplicateResourceException;
 import com.sideproject.caregiver_management.user.exception.NotFoundTenantException;
+import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +66,15 @@ public class TenantServiceImpl implements TenantService {
             throw new NotFoundTenantException("테넌트를 찾을 수 없습니다.");
 
         return tenant;
+    }
+
+    @Override
+    public User findUserById(Long id) throws NotFoundTenantException {
+        User user = userRepository.findOne(id);
+
+        if (user == null)
+            throw new NotFoundUserException("테넌트를 찾을 수 없습니다.");
+
+        return user;
     }
 }

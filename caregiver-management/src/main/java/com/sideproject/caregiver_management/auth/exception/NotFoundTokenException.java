@@ -4,8 +4,8 @@ import com.sideproject.caregiver_management.common.HTTPStatusAnnotation;
 import org.springframework.http.HttpStatus;
 
 @HTTPStatusAnnotation(HttpStatus.NOT_FOUND)
-public class NotFoundUserException extends RuntimeException {
-    public NotFoundUserException(String message) {
-        super(message);
+public class NotFoundTokenException extends RuntimeException {
+    public NotFoundTokenException() {
+        super("토큰을 찾을 수 없습니다.");
     }
 }

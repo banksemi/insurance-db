@@ -1,5 +1,6 @@
 package com.sideproject.caregiver_management.auth.controller;
 
+import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.service.AuthService;
 import com.sideproject.caregiver_management.user.dto.UserLoginRequest;
 import jakarta.validation.Valid;
@@ -13,8 +14,7 @@ public class AuthController {
     private final AuthService authTokenService;
 
     @PostMapping("/login")
-    public String login(@RequestBody @Valid UserLoginRequest request){
-        authTokenService.login(request.getLoginId(), request.getPassword());
-        return "login";
+    public LoginResponse login(@RequestBody @Valid UserLoginRequest request){
+        return authTokenService.login(request.getLoginId(), request.getPassword());
     }
 }
