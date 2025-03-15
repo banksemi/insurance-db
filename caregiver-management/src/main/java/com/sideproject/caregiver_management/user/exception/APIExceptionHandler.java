@@ -1,5 +1,6 @@
 package com.sideproject.caregiver_management.user.exception;
 
+import com.sideproject.caregiver_management.user.HTTPStatusAnnotation;
 import com.sideproject.caregiver_management.user.dto.APIExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,27 +35,16 @@ public class APIExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, fieldErrors);
     }
 
-    @ExceptionHandler(NotFoundTenantException.class)
-    public ResponseEntity<APIExceptionResponse> handleNotFoundTenantException(NotFoundTenantException ex) {
-        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
-        return buildErrorResponse(HttpStatus.NOT_FOUND, errors);
-    }
-
-    @ExceptionHandler(PasswordNotMatchException.class)
-    public ResponseEntity<APIExceptionResponse> handlePasswordNotMatchException(PasswordNotMatchException ex) {
-        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, errors);
-    }
-
-    @ExceptionHandler(NotFoundUserException.class)
-    public ResponseEntity<APIExceptionResponse> handleNotFoundUserException(NotFoundUserException ex) {
-        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, errors);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIExceptionResponse> handleGlobalException(Exception ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        // Annotation 으로 HTTP 코드를 조회할 수 있을까?
+        HTTPStatusAnnotation annotation = ex.getClass().getAnnotation(HTTPStatusAnnotation.class);
+        if (annotation != null) {
+            status = annotation.value();
+        }
         List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, errors);
+        return buildErrorResponse(status, errors);
     }
 }
