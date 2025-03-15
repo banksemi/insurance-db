@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<title>사이트 로그인</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" th:href="@{/login/login.css}">
+		<script th:src="@{/common/jquery-3.3.1.js}"></script>
+		<script th:src="@{/login/login.js}"></script>
+	</head>
+	<body>
+	<div class="main">
+	    <div class="loginbox">
+            <div class="login_title">
+
+            </div>
+            <form method="post" onsubmit="return false;">
+                    <input type="text" name="id" id="id" class="input_box"
+                           placeholder="아이디 입력"
+                           autofocus="autofocus" onfocus="this.select()">
+                    <input type="password" name="pass" id="pass" class="input_box"
+                           placeholder="비밀번호 입력"
+                           autocomplete=off>
+                    <input type="submit" value="로그인" onclick="login(); ">
+            </form>
+            <p id="login_message">
+                &nbsp;
+            </p>
+        </div>
+        </div>
+	</body>
+</html>

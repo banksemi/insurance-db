@@ -3,6 +3,7 @@ package com.sideproject.caregiver_management.user.service;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
+import com.sideproject.caregiver_management.user.exception.NotFoundTenantException;
 import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 import com.sideproject.caregiver_management.user.exception.PasswordNotMatchException;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
@@ -46,6 +47,16 @@ public class TenantServiceImpl implements TenantService {
                 .build();
         userRepository.save(user);
         return user.getId();
+    }
+
+    @Override
+    public Tenant findTenantById(Long id) throws NotFoundTenantException {
+        Tenant tenant = tenantRepository.findOne(id);
+
+        if (tenant == null)
+            throw new NotFoundTenantException("테넌트를 찾을 수 없습니다.");
+
+        return tenant;
     }
 
     @Override

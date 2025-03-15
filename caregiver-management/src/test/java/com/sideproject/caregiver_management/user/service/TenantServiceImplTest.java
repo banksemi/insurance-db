@@ -3,6 +3,7 @@ package com.sideproject.caregiver_management.user.service;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
+import com.sideproject.caregiver_management.user.exception.NotFoundTenantException;
 import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 import com.sideproject.caregiver_management.user.exception.PasswordNotMatchException;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
@@ -97,5 +98,19 @@ class TenantServiceImplTest {
         assertThrows(PasswordNotMatchException.class, () -> tenantService.login("test", "test1"));
         assertThrows(PasswordNotMatchException.class, () -> tenantService.login("test", ""));
         assertThrows(NullPointerException.class, () -> tenantService.login("test", null));
+    }
+
+    @Test
+    void findTenantById() {
+        Tenant tenant = new Tenant();
+        tenant.setName("name");
+        tenantRepository.save(tenant);
+
+        Tenant findTenant = tenantService.findTenantById(tenant.getId());
+
+        assertEquals(tenant.getId(), findTenant.getId());
+        assertEquals(tenant.getName(), findTenant.getName());
+        assertThrows(NotFoundTenantException.class, () -> tenantService.findTenantById(0L));
+
     }
 }
