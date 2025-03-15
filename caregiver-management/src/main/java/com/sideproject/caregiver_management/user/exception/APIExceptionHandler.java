@@ -41,6 +41,12 @@ public class APIExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, errors);
     }
 
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ResponseEntity<APIExceptionResponse> handlePasswordNotMatchException(PasswordNotMatchException ex) {
+        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, errors);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIExceptionResponse> handleGlobalException(Exception ex) {
         List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));

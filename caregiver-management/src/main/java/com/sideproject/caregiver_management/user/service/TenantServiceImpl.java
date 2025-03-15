@@ -67,7 +67,7 @@ public class TenantServiceImpl implements TenantService {
         }
 
         if (!passwordService.matches(password, user.get().getPassword())) {
-            throw new PasswordNotMatchException();
+            throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
         }
         return user.get();
     }
