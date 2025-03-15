@@ -1,7 +1,7 @@
-package com.sideproject.caregiver_management.user.controller;
+package com.sideproject.caregiver_management.auth.controller;
 
+import com.sideproject.caregiver_management.auth.service.AuthService;
 import com.sideproject.caregiver_management.user.dto.UserLoginRequest;
-import com.sideproject.caregiver_management.user.service.TenantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final TenantService tenantService;
+    private final AuthService authTokenService;
 
     @PostMapping("/login")
     public String login(@RequestBody @Valid UserLoginRequest request){
-        tenantService.login(request.getLoginId(), request.getPassword());
+        authTokenService.login(request.getLoginId(), request.getPassword());
         return "login";
     }
 }

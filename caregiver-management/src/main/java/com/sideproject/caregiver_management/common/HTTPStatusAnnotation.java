@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.user;
+package com.sideproject.caregiver_management.common;
 
 import org.springframework.http.HttpStatus;
 

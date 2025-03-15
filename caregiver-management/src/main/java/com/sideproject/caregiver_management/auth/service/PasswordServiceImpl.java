@@ -1,6 +1,7 @@
-package com.sideproject.caregiver_management.user.service;
+package com.sideproject.caregiver_management.auth.service;
 
-import com.sideproject.caregiver_management.user.service.password.PasswordAlgorithm;
+import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
+import com.sideproject.caregiver_management.auth.service.password_algorithm.PasswordAlgorithm;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,27 +15,25 @@ public class PasswordServiceImpl implements PasswordService {
 
     public PasswordServiceImpl(PasswordAlgorithm mainAlgorithm, List<PasswordAlgorithm> passwordAlgorithmList) {
         this.mainAlgorithm = mainAlgorithm;
-        this.passwordAlgorithmMap = new HashMap<String, PasswordAlgorithm>();
+        this.passwordAlgorithmMap = new HashMap<>();
         for (PasswordAlgorithm passwordAlgorithm : passwordAlgorithmList) {
             passwordAlgorithmMap.put(passwordAlgorithm.getPrefix(), passwordAlgorithm);
         }
     }
     @Override
-    public String encode(String rawPassword) {
-        return mainAlgorithm.getPrefix() + ":" + mainAlgorithm.encode(rawPassword);
+    public EncodedPassword encode(String rawPassword) {
+        return new EncodedPassword(mainAlgorithm.getPrefix(), mainAlgorithm.encode(rawPassword));
     }
 
     @Override
-    public boolean matches(String inputPassword, String encodedPassword) {
-        String[] parts = encodedPassword.split(":");
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid password format");
-        }
-        String prefix = parts[0];
-        String hashedPassword = parts[1];
+    public boolean matches(String inputPassword, EncodedPassword encodedPassword) {
+        String prefix = encodedPassword.getPrefix();
+        String hashedPassword = encodedPassword.getValue();
+
         if (!passwordAlgorithmMap.containsKey(prefix)) {
             throw new IllegalArgumentException("Unsupported password algorithm");
         }
+
         return passwordAlgorithmMap.get(prefix).encode(inputPassword).equals(hashedPassword);
     }
 }

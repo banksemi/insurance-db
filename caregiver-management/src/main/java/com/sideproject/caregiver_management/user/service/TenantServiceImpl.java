@@ -1,20 +1,18 @@
 package com.sideproject.caregiver_management.user.service;
 
+import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
+import com.sideproject.caregiver_management.auth.service.PasswordService;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.exception.DuplicateResourceException;
 import com.sideproject.caregiver_management.user.exception.NotFoundTenantException;
-import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
-import com.sideproject.caregiver_management.user.exception.PasswordNotMatchException;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,11 +43,10 @@ public class TenantServiceImpl implements TenantService {
     @Transactional
     public Long createUser(Long tenantId, UserCreateRequest userCreateRequest) throws DuplicateResourceException {
         Tenant tenant = tenantRepository.findOne(tenantId);
-        String encodedPassword = passwordService.encode(userCreateRequest.getPassword());
         User user = User.builder()
                 .tenant(tenant)
                 .loginId(userCreateRequest.getLoginId())
-                .password(encodedPassword)
+                .password(passwordService.encode(userCreateRequest.getPassword()))
                 .name(userCreateRequest.getName())
                 .build();
         try{
@@ -68,18 +65,5 @@ public class TenantServiceImpl implements TenantService {
             throw new NotFoundTenantException("테넌트를 찾을 수 없습니다.");
 
         return tenant;
-    }
-
-    @Override
-    public User login(String loginId, String password) throws NotFoundUserException, PasswordNotMatchException {
-        Optional<User> user = userRepository.findByLoginId(loginId);
-        if (user.isEmpty()) {
-            throw new NotFoundUserException("사용자를 찾을 수 없습니다.");
-        }
-
-        if (!passwordService.matches(password, user.get().getPassword())) {
-            throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
-        }
-        return user.get();
     }
 }

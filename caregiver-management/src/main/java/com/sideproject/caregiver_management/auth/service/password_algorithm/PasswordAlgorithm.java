@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.user.service.password;
+package com.sideproject.caregiver_management.auth.service.password_algorithm;
 
 public interface PasswordAlgorithm {
     String getPrefix();

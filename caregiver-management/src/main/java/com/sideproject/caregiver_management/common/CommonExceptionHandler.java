@@ -1,6 +1,5 @@
-package com.sideproject.caregiver_management.user.exception;
+package com.sideproject.caregiver_management.common;
 
-import com.sideproject.caregiver_management.user.HTTPStatusAnnotation;
 import com.sideproject.caregiver_management.user.dto.APIExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
-public class APIExceptionHandler {
+public class CommonExceptionHandler {
     private ResponseEntity<APIExceptionResponse> buildErrorResponse(HttpStatus status, List<Map<String, Object>> errors) {
         APIExceptionResponse response = APIExceptionResponse.builder()
                 .status(status.value())

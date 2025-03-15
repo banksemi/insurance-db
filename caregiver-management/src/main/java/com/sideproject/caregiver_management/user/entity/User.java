@@ -1,5 +1,7 @@
 package com.sideproject.caregiver_management.user.entity;
 
+import com.sideproject.caregiver_management.auth.converter.EncodedPasswordConverter;
+import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,10 +28,11 @@ public class User {
     private String name;
 
     @Column(nullable = false)
-    private String password;
+    @Convert(converter = EncodedPasswordConverter.class)
+    private EncodedPassword password;
 
     @Builder
-    public User(Tenant tenant, String loginId, String name, String password) {
+    public User(Tenant tenant, String loginId, String name, EncodedPassword password) {
         this.tenant = tenant;
         this.loginId = loginId;
         this.name = name;
