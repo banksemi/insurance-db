@@ -12,6 +12,7 @@ public class TenantRepository {
 
     public void save(Tenant tenant){
         em.persist(tenant);
+        em.flush();
     }
 
     public Tenant findOne(Long id){

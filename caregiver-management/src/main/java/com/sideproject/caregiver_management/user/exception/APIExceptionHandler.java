@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +42,12 @@ public class APIExceptionHandler {
 
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<APIExceptionResponse> handlePasswordNotMatchException(PasswordNotMatchException ex) {
+        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, errors);
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    public ResponseEntity<APIExceptionResponse> handleNotFoundUserException(NotFoundUserException ex) {
         List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, errors);
     }

@@ -3,12 +3,14 @@ package com.sideproject.caregiver_management.user.service;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
+import com.sideproject.caregiver_management.user.exception.DuplicateResourceException;
 import com.sideproject.caregiver_management.user.exception.NotFoundTenantException;
 import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 import com.sideproject.caregiver_management.user.exception.PasswordNotMatchException;
 import com.sideproject.caregiver_management.user.repository.TenantRepository;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +25,25 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     @Transactional
-    public Long createTenant(String name) throws IllegalArgumentException {
+    public Long createTenant(String name) throws DuplicateResourceException {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Tenant name must not be null or empty");
         }
 
         Tenant tenant = new Tenant();
         tenant.setName(name);
-        tenantRepository.save(tenant);
+
+        try {
+            tenantRepository.save(tenant);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("테넌트가 이미 존재합니다.");
+        }
         return tenant.getId();
     }
 
     @Override
     @Transactional
-    public Long createUser(Long tenantId, UserCreateRequest userCreateRequest) {
+    public Long createUser(Long tenantId, UserCreateRequest userCreateRequest) throws DuplicateResourceException {
         Tenant tenant = tenantRepository.findOne(tenantId);
         String encodedPassword = passwordService.encode(userCreateRequest.getPassword());
         User user = User.builder()
@@ -45,7 +52,11 @@ public class TenantServiceImpl implements TenantService {
                 .password(encodedPassword)
                 .name(userCreateRequest.getName())
                 .build();
-        userRepository.save(user);
+        try{
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("사용자가 이미 존재합니다.");
+        }
         return user.getId();
     }
 

@@ -20,6 +20,7 @@ public class UserRepository {
 
     public void save(User user){
         em.persist(user);
+        em.flush();
     }
 
     public Optional<User> findByLoginId(String loginId){
