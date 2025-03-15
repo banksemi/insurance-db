@@ -40,10 +40,13 @@ public class CommonExceptionHandler {
 
         // Annotation 으로 HTTP 코드를 조회할 수 있을까?
         HTTPStatusAnnotation annotation = ex.getClass().getAnnotation(HTTPStatusAnnotation.class);
+        List<Map<String, Object>> errors = new ArrayList<>();
         if (annotation != null) {
             status = annotation.value();
+            errors.add(Map.of("message", ex.getMessage()));
+        } else {
+            errors.add(Map.of("message", "Internal Server Error"));
         }
-        List<Map<String, Object>> errors = List.of(Map.of("message", ex.getMessage()));
         return buildErrorResponse(status, errors);
     }
 }
