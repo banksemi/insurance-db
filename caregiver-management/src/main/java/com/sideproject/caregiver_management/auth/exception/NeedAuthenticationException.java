@@ -9,4 +9,7 @@ public class NeedAuthenticationException extends KnownException {
     public NeedAuthenticationException() {
         super("로그인이 필요합니다.");
     }
+    public NeedAuthenticationException(String message) {
+        super(message);
+    }
 }

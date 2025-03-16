@@ -59,6 +59,7 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Tenant findTenantById(Long id) throws NotFoundTenantException {
         Tenant tenant = tenantRepository.findOne(id);
 
@@ -69,6 +70,7 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findUserById(Long id) throws NotFoundTenantException {
         User user = userRepository.findOne(id);
 

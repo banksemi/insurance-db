@@ -4,7 +4,22 @@
       layout:decorate="~{layout}">
 
 <main layout:fragment="content">
-
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: `/api/v1/users/me`,
+                success: function (data) {
+                    $("#auth-id").text(`${data.loginId}`);
+                    $("#auth-name").text(`${data.name}`);
+                    localStorage.setItem("accessToken", accessToken);
+                },
+                error: function () {
+                    $(".login_title").text("로그인");
+                }
+            });
+        });
+    </script>
     <div class="title_area">
         <h3>가입 정보</h3>
         <div class="content_area">

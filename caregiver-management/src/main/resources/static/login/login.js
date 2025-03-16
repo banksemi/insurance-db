@@ -1,8 +1,3 @@
-$.ajaxSetup({
-    contentType: "application/json",
-    dataType: "json"
-});
-
 function login() {
     $("#login_message").text("로그인 시도중...");
     $.ajax({
@@ -13,11 +8,12 @@ function login() {
         }),
         url: '/api/v1/auth/login',
         success: function (data) {
-            if (data.success == 0) {
-                $("#login_message").text(data.error);
-            } else {
-                location.href = "/account/info/";
-            }
+            location.href = "/account/info";
+            authTokenManager.setTokens({
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                expireAt: data.expireAt
+            });
         },
         error: function (jqXHR) {
             data = jqXHR.responseJSON;

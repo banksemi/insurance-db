@@ -2,6 +2,7 @@ package com.sideproject.caregiver_management.auth;
 
 import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.service.AuthService;
+import com.sideproject.caregiver_management.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -48,8 +51,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         log.debug("accessToken: {}", accessToken);
-
-        loginSession.setUser(authService.validateAccessToken(accessToken, viewRole));
+        Optional<User> user = authService.validateAccessToken(accessToken, viewRole);
+        if (user.isPresent()) {
+            loginSession.setUserId(user.get().getId());
+        }
         return true;
     }
 }

@@ -100,4 +100,49 @@ class AuthServiceImplTest {
         assertEquals(Optional.empty(), authService.validateAccessToken("", Auth.Role.ROLE_GUEST));
         assertEquals(Optional.empty(), authService.validateAccessToken("token", Auth.Role.ROLE_GUEST));
     }
+
+    @Test
+    void refreshAccessToken() {
+        // given
+        Long userId = tenantService.createUser(
+                tenantId,
+                UserCreateRequest.builder()
+                        .loginId("test")
+                        .password("test12")
+                        .name("test1")
+                        .build()
+        );
+        User user = tenantService.findUserById(userId);
+        String refreshToken = authTokenService.generateAndSaveRefreshToken(user, Instant.now().plusSeconds(100));
+
+        // when
+        LoginResponse accessToken = authService.refreshAccessToken(refreshToken);
+
+        // then
+        assertEquals(userId, accessToken.getUserId());
+        assertEquals(userId, authService.validateAccessToken(accessToken.getAccessToken(), Auth.Role.ROLE_USER).get().getId());
+    }
+
+    @Test
+    void refreshAccessToken_Invalid() {
+        // given
+        Long userId = tenantService.createUser(
+                tenantId,
+                UserCreateRequest.builder()
+                        .loginId("test")
+                        .password("test12")
+                        .name("test1")
+                        .build()
+        );
+        User user = tenantService.findUserById(userId);
+
+        // when
+        String accessToken = authTokenService.generateAndSaveAccessToken(user, Instant.now().plusSeconds(100));
+
+        // then
+        assertThrows(NeedAuthenticationException.class, ()->authService.refreshAccessToken(accessToken));
+        assertThrows(NeedAuthenticationException.class, ()->authService.refreshAccessToken("token"));
+        assertThrows(NeedAuthenticationException.class, ()->authService.refreshAccessToken(""));
+        assertThrows(NeedAuthenticationException.class, ()->authService.refreshAccessToken(null));
+    }
 }

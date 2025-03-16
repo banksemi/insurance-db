@@ -61,4 +61,22 @@ public class AuthServiceImpl implements AuthService {
 
         return loginUser;
     }
+
+    @Override
+    public LoginResponse refreshAccessToken(String refreshToken) throws NeedAuthenticationException {
+        try {
+            User user = authTokenService.getUserFromRefreshToken(refreshToken);
+            Instant expireAt = Instant.now().plusSeconds(3600);
+            String accessToken = authTokenService.generateAndSaveAccessToken(user, expireAt);
+
+            return LoginResponse.builder()
+                    .userId(user.getId())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .expireAt(expireAt.getEpochSecond())
+                    .build();
+        } catch (NotFoundTokenException e) {
+            throw new NeedAuthenticationException("토큰이 유효하지 않습니다.");
+        }
+    }
 }

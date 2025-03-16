@@ -1,12 +1,10 @@
 package com.sideproject.caregiver_management.auth.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginResponse {
     private final Long userId;
     private final String accessToken;

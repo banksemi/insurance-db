@@ -14,5 +14,5 @@ import java.util.Optional;
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS) // 프록시 객체를 사용하여 필요할 때 주입되도록 설정
 @Getter @Setter
 public class LoginSession {
-    private Optional<User> user;
+    private Long userId;
 }

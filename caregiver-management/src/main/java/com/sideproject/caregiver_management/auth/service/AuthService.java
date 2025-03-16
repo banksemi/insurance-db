@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface AuthService {
     LoginResponse login(String loginId, String password) throws LoginIdNotMatchException, PasswordNotMatchException;
     Optional<User> validateAccessToken(String accessToken, Auth.Role role) throws NeedAuthenticationException, ForbiddenAccessException;
+    LoginResponse refreshAccessToken(String refreshToken) throws NeedAuthenticationException;
 }

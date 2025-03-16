@@ -1,12 +1,10 @@
 package com.sideproject.caregiver_management.auth.service;
 
-import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
 import com.sideproject.caregiver_management.auth.exception.NotFoundTokenException;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.service.TenantService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class DBAuthAuthTokenServiceTest {
+class DBAuthTokenServiceTest {
     private static final int MIN_TOKEN_LENGTH = 256;
 
     @Autowired
