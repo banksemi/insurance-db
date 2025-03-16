@@ -6,21 +6,7 @@
         {{ request.user.name }}
         <span style="color: #c5c5c5"> 님 환영합니다.</span>
     </div>
-    <a class="button" onclick="logout()">로그아웃</a>
-    <script>
-        function logout() {
-            $.ajax({
-                type: "POST",
-                url: '/api/auth/logout/',
-                success: function (data) {
-                    location.href = "/login/";
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    location.href = "/login/";
-                }
-            });
-        }
-    </script>
+    <a class="button" onclick="authTokenManager.logout()">로그아웃</a>
     <a class="button" onclick="print()">페이지 인쇄</a>
     {% if request.proxied %}
     <a class="button" onclick="login_return()">관리자 계정으로 돌아가기</a>

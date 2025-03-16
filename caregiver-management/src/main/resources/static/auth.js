@@ -26,6 +26,12 @@ var authTokenManager = (function() {
         getRefreshToken: function() {
             return refreshToken;
         },
+        logout: function() {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("expireAt");
+            location.href = "/login";
+        },
         isTokenExpired: function() {
             var currentTime = Math.floor(Date.now() / 1000);
             return expireAt && currentTime > expireAt;
@@ -54,9 +60,17 @@ function refreshAccessToken() {
             refreshToken: authTokenManager.getRefreshToken()
         }),
         contentType: "application/json"
-    }).done(function(data) {
+    })
+    .done(function(data) {
         // 응답 받은 토큰들을 저장
         authTokenManager.setTokens(data);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        // 400 혹은 401 에러 발생 시 강제 로그아웃
+        console.log(jqXHR);
+        if (jqXHR.status === 400 || jqXHR.status === 401) {
+            authTokenManager.logout();
+        }
     });
 }
 
