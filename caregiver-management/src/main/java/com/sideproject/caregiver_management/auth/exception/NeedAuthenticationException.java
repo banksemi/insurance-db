@@ -1,10 +1,11 @@
 package com.sideproject.caregiver_management.auth.exception;
 
 import com.sideproject.caregiver_management.common.HTTPStatusAnnotation;
+import com.sideproject.caregiver_management.common.KnownException;
 import org.springframework.http.HttpStatus;
 
 @HTTPStatusAnnotation(HttpStatus.UNAUTHORIZED)
-public class NeedAuthenticationException extends RuntimeException {
+public class NeedAuthenticationException extends KnownException {
     public NeedAuthenticationException() {
         super("로그인이 필요합니다.");
     }

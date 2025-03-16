@@ -1,6 +1,5 @@
-package com.sideproject.caregiver_management.user.dto;
+package com.sideproject.caregiver_management.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

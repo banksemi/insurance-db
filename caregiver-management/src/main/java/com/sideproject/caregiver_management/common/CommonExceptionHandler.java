@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.common;
 
-import com.sideproject.caregiver_management.user.dto.APIExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,7 +18,7 @@ public class CommonExceptionHandler {
                 .status(status.value())
                 .errors(errors)
                 .build();
-        return new ResponseEntity<>(response, status);
+        return new ResponseEntity<APIExceptionResponse>(response, status);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,8 +33,8 @@ public class CommonExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, fieldErrors);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<APIExceptionResponse> handleGlobalException(Exception ex) {
+    @ExceptionHandler(KnownException.class)
+    public ResponseEntity<APIExceptionResponse> handleGlobalException(KnownException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         // Annotation 으로 HTTP 코드를 조회할 수 있을까?
