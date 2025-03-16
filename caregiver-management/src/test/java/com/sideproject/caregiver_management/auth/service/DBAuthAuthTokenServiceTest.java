@@ -59,8 +59,11 @@ class DBAuthAuthTokenServiceTest {
     void getUserFromAccessToken() {
         String token = authTokenService.generateAndSaveAccessToken(user, Instant.now().plusSeconds(10000L));
 
-        User user = authTokenService.getUserFromAccessToken(token);
-
+        try {
+            User user = authTokenService.getUserFromAccessToken(token);
+        } catch (NotFoundTokenException e) {
+            throw new RuntimeException(e);
+        }
         assertNotNull(user);
         assertEquals(this.user.getId(), user.getId());
     }
@@ -86,8 +89,11 @@ class DBAuthAuthTokenServiceTest {
     @Test
     void getUserFromRefreshToken() {
         String token = authTokenService.generateAndSaveRefreshToken(user, Instant.now().plusSeconds(10000L));
-
-        User user = authTokenService.getUserFromRefreshToken(token);
+        try {
+            User user = authTokenService.getUserFromRefreshToken(token);
+        } catch (NotFoundTokenException e) {
+            throw new RuntimeException(e);
+        }
 
         assertNotNull(user);
         assertEquals(this.user.getId(), user.getId());

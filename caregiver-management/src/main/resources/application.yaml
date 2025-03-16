@@ -14,3 +14,5 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+    com.sideproject.caregiver_management.auth:
+      AuthInterceptor: debug

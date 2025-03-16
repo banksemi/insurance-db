@@ -1,8 +1,8 @@
 package com.sideproject.caregiver_management.auth.service;
 
+import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
-import com.sideproject.caregiver_management.auth.exception.LoginIdNotMatchException;
-import com.sideproject.caregiver_management.auth.exception.PasswordNotMatchException;
+import com.sideproject.caregiver_management.auth.exception.*;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
@@ -41,5 +41,24 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .expireAt(expireAt.getEpochSecond())
                 .build();
+    }
+
+    @Override
+    public Optional<User> validateAccessToken(String accessToken, Auth.Role role) throws NeedAuthenticationException, ForbiddenAccessException {
+        Optional<User> loginUser;
+        try {
+            loginUser = Optional.of(authTokenService.getUserFromAccessToken(accessToken));
+        } catch (NotFoundTokenException ex) {
+            loginUser = Optional.empty();
+        }
+
+        if (loginUser.isEmpty() && role != Auth.Role.ROLE_GUEST)
+            throw new NeedAuthenticationException();
+
+        // Todo: 어드민 권한 구현 필요, 현재는 무조건 오류로 반환
+        if (role == Auth.Role.ROLE_ADMIN)
+            throw new ForbiddenAccessException();
+
+        return loginUser;
     }
 }
