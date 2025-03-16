@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.common;
+package com.sideproject.caregiver_management.common.dto;
 
 import org.springframework.http.HttpStatus;
 

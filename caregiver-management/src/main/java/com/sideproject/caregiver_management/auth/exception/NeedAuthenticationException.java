@@ -1,7 +1,7 @@
 package com.sideproject.caregiver_management.auth.exception;
 
-import com.sideproject.caregiver_management.common.HTTPStatusAnnotation;
-import com.sideproject.caregiver_management.common.KnownException;
+import com.sideproject.caregiver_management.common.dto.HTTPStatusAnnotation;
+import com.sideproject.caregiver_management.common.exception.KnownException;
 import org.springframework.http.HttpStatus;
 
 @HTTPStatusAnnotation(HttpStatus.UNAUTHORIZED)

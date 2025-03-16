@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.user.service;
 
-import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
 import com.sideproject.caregiver_management.auth.service.PasswordService;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.entity.Tenant;

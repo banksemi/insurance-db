@@ -3,13 +3,14 @@ package com.sideproject.caregiver_management.auth.controller;
 import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.dto.RefreshTokenRequest;
-import com.sideproject.caregiver_management.auth.service.AuthService;
 import com.sideproject.caregiver_management.auth.dto.UserLoginRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.sideproject.caregiver_management.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")

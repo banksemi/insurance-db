@@ -1,5 +1,8 @@
-package com.sideproject.caregiver_management.common;
+package com.sideproject.caregiver_management.common.handler;
 
+import com.sideproject.caregiver_management.common.dto.APIExceptionResponse;
+import com.sideproject.caregiver_management.common.dto.HTTPStatusAnnotation;
+import com.sideproject.caregiver_management.common.exception.KnownException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +21,7 @@ public class CommonExceptionHandler {
                 .status(status.value())
                 .errors(errors)
                 .build();
-        return new ResponseEntity<APIExceptionResponse>(response, status);
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

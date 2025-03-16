@@ -5,15 +5,12 @@ import com.sideproject.caregiver_management.auth.exception.NotFoundTokenExceptio
 import com.sideproject.caregiver_management.auth.repository.TokenRepository;
 import com.sideproject.caregiver_management.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.N;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service

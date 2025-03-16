@@ -1,8 +1,8 @@
 package com.sideproject.caregiver_management.auth.converter;
 
 import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
-import jakarta.persistence.Converter;
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class EncodedPasswordConverter implements AttributeConverter<EncodedPassword, String> {
