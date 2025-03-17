@@ -82,7 +82,7 @@ $(document).ready(function() {
             options._retry = options._retry || false;
 
             options.error = function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401 && !options._retry) {
+                if (jqXHR.status === 401 && !options._retry && !options.url.includes("/auth/login")) {
                     options._retry = true;
                     refreshAccessToken().done(function() {
                         $.ajax(options);
