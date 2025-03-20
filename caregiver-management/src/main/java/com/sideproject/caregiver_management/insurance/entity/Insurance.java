@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @Getter
 public class Insurance {
     @Id
+    @GeneratedValue
+    @Column(name="user_id")
+    private Long id;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
