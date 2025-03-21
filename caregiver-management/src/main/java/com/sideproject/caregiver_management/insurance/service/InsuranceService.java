@@ -8,7 +8,7 @@ import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.exception.NotFoundUserException;
 
 public interface InsuranceService {
-    void createInsurance(Long userId, InsuranceUpdateRequest updateRequest) throws NotFoundUserException, DuplicateInsuranceException;
+    Long createInsurance(Long userId, InsuranceUpdateRequest updateRequest) throws NotFoundUserException, DuplicateInsuranceException;
     Insurance getInsurance(Long userId) throws NotFoundInsuranceException; // 사용자 ID로 조회할 수 있음.
-    void updateInsurance(Long userId, InsuranceUpdateRequest updateRequest);
+    void updateInsurance(Long userId, InsuranceUpdateRequest updateRequest) throws NotFoundInsuranceException;
 }

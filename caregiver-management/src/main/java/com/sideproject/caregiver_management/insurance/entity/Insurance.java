@@ -6,6 +6,7 @@ import com.sideproject.caregiver_management.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -14,14 +15,17 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter(value = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Insurance {
+    public Insurance(User user){ this.user = user; }
+
     @Id
     @GeneratedValue
-    @Column(name="user_id")
+    @Column(name="insurance_id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     @Column(name = "start_date", nullable = false)

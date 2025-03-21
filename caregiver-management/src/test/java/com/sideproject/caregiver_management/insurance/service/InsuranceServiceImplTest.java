@@ -46,9 +46,11 @@ class InsuranceServiceImplTest {
                         .name("name")
                         .build());
     }
+
     @Test
     void createInsurance() {
-        insuranceService.createInsurance(defaultUserId, defaultRequest);
+        Long insuranceId = insuranceService.createInsurance(defaultUserId, defaultRequest);
+        assertNotNull(insuranceId);
     }
 
     @Test
