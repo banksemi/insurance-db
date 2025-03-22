@@ -10,11 +10,13 @@ import com.sideproject.caregiver_management.user.exception.NotFoundUserException
 import com.sideproject.caregiver_management.user.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class InsuranceServiceImpl implements InsuranceService {
     private final TenantService tenantService;
     private final InsuranceRepository insuranceRepository;

@@ -17,6 +17,17 @@
                     $("#auth-id").text("잠시 후 다시 시도해주세요.");
                 }
             });
+            $.ajax({
+                type: "GET",
+                url: `/api/v1/users/${authTokenManager.getUserId()}/insurance`,
+                success: function (data) {
+                    $("#auth-stock_number").text(data.policyNumber);
+                    $("#auth-start_time").text(data.startDate);
+                    $("#auth-end_time").text(data.endDate);
+                    $("#auth-personal_fee").text(data.personalInsuranceFee.toLocaleString());
+                    $("#auth-public_fee").text(data.sharedInsuranceFee.toLocaleString());
+                },
+            });
         });
     </script>
     <div class="title_area">
