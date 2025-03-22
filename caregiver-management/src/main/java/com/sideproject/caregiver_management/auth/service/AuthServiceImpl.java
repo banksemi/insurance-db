@@ -1,12 +1,14 @@
 package com.sideproject.caregiver_management.auth.service;
 
 import com.sideproject.caregiver_management.auth.annotation.Auth;
+import com.sideproject.caregiver_management.auth.dto.LoginInfo;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.exception.*;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -43,22 +45,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Optional<User> validateAccessToken(String accessToken, Auth.Role role) throws NeedAuthenticationException, ForbiddenAccessException {
-        Optional<User> loginUser;
+    @Transactional(readOnly = true)
+    public Optional<LoginInfo> validateAccessToken(String accessToken, Auth.Role role) throws NeedAuthenticationException, ForbiddenAccessException {
+        Optional<LoginInfo> loginInfo;
         try {
-            loginUser = Optional.of(authTokenService.getUserFromAccessToken(accessToken));
+            User user = authTokenService.getUserFromAccessToken(accessToken);
+            loginInfo = Optional.of(LoginInfo.builder().tenantId(user.getTenant().getId()).userId(user.getId()).build());
         } catch (NotFoundTokenException ex) {
-            loginUser = Optional.empty();
+            loginInfo = Optional.empty();
         }
 
-        if (loginUser.isEmpty() && role != Auth.Role.ROLE_GUEST)
+        if (loginInfo.isEmpty() && role != Auth.Role.ROLE_GUEST)
             throw new NeedAuthenticationException();
 
         // Todo: 어드민 권한 구현 필요, 현재는 무조건 오류로 반환
         if (role == Auth.Role.ROLE_ADMIN)
             throw new ForbiddenAccessException();
 
-        return loginUser;
+        return loginInfo;
     }
 
     @Override

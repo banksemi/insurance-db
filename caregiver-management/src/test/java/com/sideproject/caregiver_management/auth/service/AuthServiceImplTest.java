@@ -82,8 +82,11 @@ class AuthServiceImplTest {
         String token = authTokenService.generateAndSaveAccessToken(user, Instant.now().plusSeconds(100));
 
         assertThrows(ForbiddenAccessException.class, () -> authService.validateAccessToken(token, Auth.Role.ROLE_ADMIN));
-        assertEquals(Optional.of(user), authService.validateAccessToken(token, Auth.Role.ROLE_USER));
-        assertEquals(Optional.of(user), authService.validateAccessToken(token, Auth.Role.ROLE_GUEST));
+        assertEquals(userId, authService.validateAccessToken(token, Auth.Role.ROLE_USER).get().getUserId());
+        assertEquals(userId, authService.validateAccessToken(token, Auth.Role.ROLE_GUEST).get().getUserId());
+
+        assertEquals(tenantId, authService.validateAccessToken(token, Auth.Role.ROLE_USER).get().getTenantId());
+        assertEquals(tenantId, authService.validateAccessToken(token, Auth.Role.ROLE_GUEST).get().getTenantId());
     }
 
     @Test
@@ -120,7 +123,7 @@ class AuthServiceImplTest {
 
         // then
         assertEquals(userId, accessToken.getUserId());
-        assertEquals(userId, authService.validateAccessToken(accessToken.getAccessToken(), Auth.Role.ROLE_USER).get().getId());
+        assertEquals(userId, authService.validateAccessToken(accessToken.getAccessToken(), Auth.Role.ROLE_USER).get().getUserId());
     }
 
     @Test

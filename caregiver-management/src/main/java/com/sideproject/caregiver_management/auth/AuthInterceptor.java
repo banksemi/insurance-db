@@ -1,6 +1,7 @@
 package com.sideproject.caregiver_management.auth;
 
 import com.sideproject.caregiver_management.auth.annotation.Auth;
+import com.sideproject.caregiver_management.auth.dto.LoginInfo;
 import com.sideproject.caregiver_management.auth.service.AuthService;
 import com.sideproject.caregiver_management.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,9 +52,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         log.debug("accessToken: {}", accessToken);
-        Optional<User> user = authService.validateAccessToken(accessToken, viewRole);
-        if (user.isPresent()) {
-            loginSession.setUserId(user.get().getId());
+        Optional<LoginInfo> loginInfo = authService.validateAccessToken(accessToken, viewRole);
+        if (loginInfo.isPresent()) {
+            loginSession.setLoginInfo(loginInfo.get());
         }
         return true;
     }
