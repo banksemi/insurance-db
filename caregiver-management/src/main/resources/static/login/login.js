@@ -12,7 +12,8 @@ function login() {
             authTokenManager.setTokens({
                 accessToken: data.accessToken,
                 refreshToken: data.refreshToken,
-                expireAt: data.expireAt
+                expireAt: data.expireAt,
+                userId: data.userId,
             });
         },
         error: function (jqXHR) {

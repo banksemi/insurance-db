@@ -8,14 +8,13 @@
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
-                url: `/api/v1/users/me`,
+                url: `/api/v1/users/${authTokenManager.getUserId()}`,
                 success: function (data) {
                     $("#auth-id").text(`${data.loginId}`);
                     $("#auth-name").text(`${data.name}`);
-                    localStorage.setItem("accessToken", accessToken);
                 },
                 error: function () {
-                    $(".login_title").text("로그인");
+                    $("#auth-id").text("잠시 후 다시 시도해주세요.");
                 }
             });
         });

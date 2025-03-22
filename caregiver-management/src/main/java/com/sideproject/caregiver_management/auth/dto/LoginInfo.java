@@ -8,4 +8,5 @@ import lombok.Getter;
 public class LoginInfo {
     private final Long tenantId;
     private final Long userId;
+    private final Boolean isAdmin;
 }

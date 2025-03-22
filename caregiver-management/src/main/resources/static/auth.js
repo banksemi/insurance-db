@@ -15,9 +15,16 @@ var authTokenManager = (function() {
             accessToken = tokens.accessToken;
             refreshToken = tokens.refreshToken;
             expireAt = tokens.expireAt;
+            userId = tokens.userId;
+            if (userId != null) {
+                localStorage.setItem("userId", userId);
+            }
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("expireAt", expireAt);
+        },
+        getUserId: function() {
+            return localStorage.getItem("userId");
         },
         getAccessToken: function() {
             return accessToken;

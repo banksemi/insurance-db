@@ -74,7 +74,7 @@ public class TenantServiceImpl implements TenantService {
         User user = userRepository.findOne(id);
 
         if (user == null)
-            throw new NotFoundUserException("테넌트를 찾을 수 없습니다.");
+            throw new NotFoundUserException();
 
         return user;
     }

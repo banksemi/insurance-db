@@ -3,10 +3,7 @@ package com.sideproject.caregiver_management.user.entity;
 import com.sideproject.caregiver_management.auth.converter.EncodedPasswordConverter;
 import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -33,6 +30,10 @@ public class User {
     @Column(nullable = false)
     @Convert(converter = EncodedPasswordConverter.class)
     private EncodedPassword password;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Setter
+    private Boolean isAdmin = false;
 
     @Builder
     public User(Tenant tenant, String loginId, String name, EncodedPassword password) {

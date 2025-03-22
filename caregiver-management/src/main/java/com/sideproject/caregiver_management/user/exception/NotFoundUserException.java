@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @HTTPStatusAnnotation(HttpStatus.NOT_FOUND)
 public class NotFoundUserException extends KnownException {
-    public NotFoundUserException(String message) {
-        super(message);
+    public NotFoundUserException() {
+        super("사용자를 찾을 수 없습니다.");
     }
 }
