@@ -1,6 +1,7 @@
 package com.sideproject.caregiver_management.caregiver.entity;
 
-import com.sideproject.caregiver_management.caregiver.dto.CaregiverRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverDateUpdate;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverEndDateAfterContractEndException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverEndDateBeforeStartException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateAfterContractEndException;
@@ -34,10 +35,10 @@ class CaregiverDateValidationTest {
     @DisplayName("간병일을 보험 날짜에 정확히 일치시킬 수 있어야함 (최대 범위)")
     void canCreateCaregiverWithFullInsuranceDateRange() {
         Caregiver caregiver = new Caregiver(insurance, false);
-        caregiver.update(CaregiverRequest.builder()
-                .startDate(LocalDate.of(2024, 6, 1))
-                .endDate(LocalDate.of(2025, 6, 1))
-                .build());
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setStartDate(LocalDate.of(2024, 6, 1));
+        dateUpdate.setEndDate(LocalDate.of(2025, 6, 1));
+        caregiver.setDate(dateUpdate);
 
         assertEquals(LocalDate.of(2024, 6, 1), caregiver.getStartDate());
         assertEquals(LocalDate.of(2025, 6, 1), caregiver.getEndDate());
@@ -48,10 +49,10 @@ class CaregiverDateValidationTest {
     void canTerminateCaregiverOnSameDay() {
         Caregiver caregiver = new Caregiver(insurance, false);
 
-        caregiver.update(CaregiverRequest.builder()
-                .startDate(LocalDate.of(2024, 7, 1))
-                .endDate(LocalDate.of(2024, 7, 1))
-                .build());
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setStartDate(LocalDate.of(2024, 7, 1));
+        dateUpdate.setEndDate(LocalDate.of(2024, 7, 1));
+        caregiver.setDate(dateUpdate);
 
         assertEquals(LocalDate.of(2024, 7, 1), caregiver.getStartDate());
         assertEquals(LocalDate.of(2024, 7, 1), caregiver.getEndDate());
@@ -64,18 +65,22 @@ class CaregiverDateValidationTest {
 
         assertThrows(
                 CaregiverStartDateBeforeContractStartException.class,
-                ()-> caregiver.update(CaregiverRequest.builder()
-                        .startDate(LocalDate.of(2024, 5, 31))
-                        .build()));
+                () -> {
+                    CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+                    dateUpdate.setStartDate(LocalDate.of(2024, 5, 31));
+                    caregiver.setDate(dateUpdate);
+                }
+        );
     }
     @Test
     @DisplayName("간병 시작일은 보험 만료일 하루 전까지만 설정 가능")
     void caregiverStartDateCanBeUpToOneDayBeforeInsuranceEndDate() {
         Caregiver caregiver = new Caregiver(insurance, false);
 
-        caregiver.update(CaregiverRequest.builder()
-                .startDate(LocalDate.of(2025, 5, 31))
-                .build());
+        // 보험 만료일(2025-06-01)의 하루 전(2025-05-31)
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setStartDate(LocalDate.of(2025, 5, 31));
+        caregiver.setDate(dateUpdate);
 
         assertEquals(LocalDate.of(2025, 5, 31), caregiver.getStartDate());
         assertNull(caregiver.getEndDate());
@@ -87,9 +92,12 @@ class CaregiverDateValidationTest {
 
         assertThrows(
                 CaregiverStartDateAfterContractEndException.class,
-                ()-> caregiver.update(CaregiverRequest.builder()
-                        .startDate(LocalDate.of(2025, 6, 1))
-                        .build()));
+                () -> {
+                    CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+                    dateUpdate.setStartDate(LocalDate.of(2025, 6, 1));
+                    caregiver.setDate(dateUpdate);
+                }
+        );
     }
 
     @Test
@@ -99,10 +107,13 @@ class CaregiverDateValidationTest {
 
         assertThrows(
                 CaregiverEndDateBeforeStartException.class,
-                ()-> caregiver.update(CaregiverRequest.builder()
-                        .startDate(LocalDate.of(2024, 6, 2))
-                        .endDate(LocalDate.of(2024, 6, 1))
-                        .build()));
+                () -> {
+                    CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+                    dateUpdate.setStartDate(LocalDate.of(2024, 6, 2));
+                    dateUpdate.setEndDate(LocalDate.of(2024, 6, 1));
+                    caregiver.setDate(dateUpdate);
+                }
+        );
     }
 
     @Test
@@ -112,9 +123,12 @@ class CaregiverDateValidationTest {
 
         assertThrows(
                 CaregiverEndDateAfterContractEndException.class,
-                ()-> caregiver.update(CaregiverRequest.builder()
-                        .startDate(LocalDate.of(2024, 6, 2))
-                        .endDate(LocalDate.of(2025, 6, 2))
-                        .build()));
+                () -> {
+                    CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+                    dateUpdate.setStartDate(LocalDate.of(2024, 6, 2));
+                    dateUpdate.setEndDate(LocalDate.of(2025, 6, 2));
+                    caregiver.setDate(dateUpdate);
+                }
+        );
     }
 }

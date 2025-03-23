@@ -1,25 +1,25 @@
 package com.sideproject.caregiver_management.caregiver.entity;
 
-import com.sideproject.caregiver_management.caregiver.dto.CaregiverRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverDateUpdate;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverEndDateAfterContractEndException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverEndDateBeforeStartException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateAfterContractEndException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateBeforeContractStartException;
 import com.sideproject.caregiver_management.caregiver.service.amount.CaregiverInsuranceAmountCalculator;
-import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
-import com.sideproject.caregiver_management.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.Optional;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Caregiver {
     public Caregiver(Insurance insurance, Boolean isShared) {
         this.insurance = insurance;
@@ -69,17 +69,10 @@ public class Caregiver {
     @Setter
     private String memo; // 간병인에 대한 사용자 메모
 
-    public void update(CaregiverRequest request) {
-        update(request, false);
-    }
+    public void setDate(CaregiverDateUpdate request) {
+        LocalDate wantedStartDate = request.isUpdateStartDate() ? request.getStartDate() : this.startDate;
+        LocalDate wantedEndDate = request.isUpdateEndDate() ? request.getEndDate() : this.endDate;
 
-    public void update(CaregiverRequest request, boolean clearEndDate) {
-        LocalDate wantedStartDate = Objects.requireNonNullElse(request.getStartDate(), this.startDate);
-        LocalDate wantedEndDate = Optional.ofNullable(request.getEndDate()).orElse(this.endDate); // 둘다 null인 경우가 있음
-
-        if (clearEndDate)
-            wantedEndDate = null;
-        
         // 유효성 검사
         if (wantedEndDate != null) {
             if (wantedEndDate.isBefore(wantedStartDate))

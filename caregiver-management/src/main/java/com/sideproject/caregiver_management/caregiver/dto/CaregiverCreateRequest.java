@@ -11,11 +11,10 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaregiverRequest {
+public class CaregiverCreateRequest {
     private String name;
     private Boolean isShared;
     private LocalDate birthday;
     private Integer gender;
     private LocalDate startDate;
-    private LocalDate endDate;
 }
