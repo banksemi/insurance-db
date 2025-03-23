@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -58,5 +59,9 @@ public class Insurance {
 
         if (updateRequest.getSharedInsuranceFee() != null)
             setSharedInsuranceFee(updateRequest.getSharedInsuranceFee());
+    }
+
+    public long getDays() {
+        return ChronoUnit.DAYS.between(startDate, endDate);
     }
 }

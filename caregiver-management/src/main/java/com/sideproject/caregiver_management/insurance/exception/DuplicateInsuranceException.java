@@ -1,6 +1,8 @@
 package com.sideproject.caregiver_management.insurance.exception;
 
-public class DuplicateInsuranceException extends RuntimeException {
+import com.sideproject.caregiver_management.common.exception.KnownException;
+
+public class DuplicateInsuranceException extends KnownException {
     public DuplicateInsuranceException(String message) {
         super(message);
     }
