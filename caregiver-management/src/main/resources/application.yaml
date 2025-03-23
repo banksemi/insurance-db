@@ -11,6 +11,9 @@ spring:
       ddl-auto: update
     properties:
       format_sql: true
+
+  profiles:
+    active: dev
 logging:
   level:
     org.hibernate.SQL: debug

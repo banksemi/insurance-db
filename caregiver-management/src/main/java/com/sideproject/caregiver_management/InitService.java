@@ -7,11 +7,13 @@ import com.sideproject.caregiver_management.user.exception.DuplicateResourceExce
 import com.sideproject.caregiver_management.user.service.TenantService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
+@Profile({"dev", "prod"})
 @Service
 public class InitService {
     private final TenantService tenantService;
