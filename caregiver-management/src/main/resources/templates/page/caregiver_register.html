@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<main layout:fragment="content">
+    <script th:src="@{/page/caregiver_register.js}"></script>
+    <div class="title_area" style="width:49%;display: inline-block;">
+        <h3>개별 입력</h3>
+        <div class="content_area">
+            <form id="a">
+                <table class="style1 left input">
+                    <tr>
+                        <th>보험 타입</th>
+                        <td><label><input checked="checked" name="isShared" onclick="requestEstimate()" type="radio"
+                                          value="false">개인 간병</label>&nbsp;
+                            <label><input name="isShared" onclick="requestEstimate()" type="radio" value="true">공동 간병</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <td><input name="name" type="text" value=""></td>
+                    </tr>
+                    <tr>
+                        <th>주민번호</th>
+                        <td><input class="numberinput" maxlength=6 name="birth1" type="text" value=""> - <input
+                                class="numberinput" maxlength=1 name="birth2" type="text" value=""> ******
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>보험 시작일</th>
+                        <td><input class="dateinput" echo id="datepicker1" name="date" onchange="requestEstimate()"
+                                   type="text" value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>보험 만기일</th>
+                        <td id="insuranceEndDate"></td>
+                    </tr>
+                    <tr>
+                        <th>예상 납입 금액</th>
+                        <td id="insuranceAmount"></td>
+                    </tr>
+                </table>
+            </form>
+            <button class="button_style1" id="each" onclick="createCaregiver()" style="width: 100%">제출</button>
+        </div>
+    </div>
+
+    <div class="title_area right" style="width:50%;display: inline-block;">
+        <h3>대량 입력</h3>
+        <div class="content_area">
+            이름, 주민번호, 보험시작일 순으로 데이터를 작성해주세요.(여러줄 작성 가능)<br>
+            <br>
+            주민번호는 -를 생략 가능하며 생년월일+뒤의 한자리 조합이어야합니다.<br>
+            날짜는 '-' 또는 '/'을 통해 연도,월,일의 구분이 명확해야합니다.<br>
+            <br>
+            예시<br>홍길동,5111191,2017-01-02<br>
+            진달래,621119-1,2017-05-01<br>
+            해바라기,1411191,2017-03-02<br><br>
+            대량 입력중 한 건이라도 실패할 경우 제출 자체가 무효처리됩니다.<br>
+            <? if ($_SESSION['admin'] == true) { ?><br>
+            <b>현재 SESSION는 관리자 권한이 있기때문에 보험 해지일을 같이 지정해줄 수 있습니다.</b><br>
+            홍길동,5111191,2017-01-02,2018-01-01<br>
+            <? } ?>
+            <table class="center">
+                <tr>
+                    <td>
+                        <h4>개인 간병 보험</h4>
+                    </td>
+                    <td>
+                        <h4>공동 간병 보험</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+<textarea cols="50" id="personalbox" onkeyup='preview("personal")' rows="10" style="width:100%">
+</textarea>
+                    </td>
+                    <td>
+<textarea cols="50" id="publicbox" onkeyup='preview("public")' rows="10" style="width:100%">
+</textarea>
+                    </td>
+                </tr>
+            </table>
+
+            <button class="button_style1" id="all" onclick="summit_all('personal')" style="width: 100%">제출</button>
+            <br>
+            제출 미리보기
+            <br>
+            <div style="border: 1px solid #000000; padding: 10px;">
+                <span id="preview_personal"></span>
+                <span id="preview_public"></span>
+            </div>
+        </div>
+    </div>
+</main>
+
+</html>

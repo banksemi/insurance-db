@@ -18,4 +18,9 @@ public class FrontendController {
     public String index() {
         return "login";
     }
+
+    @RequestMapping("/caregiver/register")
+    public String caregiverRegister() {
+        return "page/caregiver_register";
+    }
 }

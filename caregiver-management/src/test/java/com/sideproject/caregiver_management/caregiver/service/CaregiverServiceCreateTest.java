@@ -1,6 +1,7 @@
 package com.sideproject.caregiver_management.caregiver.service;
 
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverDuplicateException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateBeforeNowException;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
@@ -199,5 +200,17 @@ public class CaregiverServiceCreateTest {
 
         request.setGenderCode(1);
         caregiverService.addCaregiver(insurance, request);
+    }
+
+    @Test
+    @DisplayName("간병인 등록시 보험료가 계산되는지 확인")
+    void createCaregiver_insuranceAmount() {
+        Long caregiverId = caregiverService.addCaregiver(
+                insurance, createRequest(LocalDate.of(2025, 5, 1)));
+        assertNotNull(caregiverId);
+
+        Caregiver caregiver = caregiverService.getCaregiver(caregiverId);
+        assertEquals(caregiver.getInsuranceAmount(), 85);
+        assertNull(caregiver.getRefundAmount());
     }
 }
