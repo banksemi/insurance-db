@@ -1,5 +1,6 @@
 package com.sideproject.caregiver_management.caregiver.repository;
 
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import jakarta.persistence.EntityManager;
@@ -24,14 +25,20 @@ public class CaregiverRepository {
         em.persist(caregiver);
     }
 
-    public boolean isDuplicatedCaregiver(Long insuranceId, String name, LocalDate startDate) {
+    public boolean isDuplicatedCaregiver(Long insuranceId, CaregiverCreateRequest request) {
         try {
             em.createQuery("select i from Caregiver i " +
                             "where i.insurance.id = :insuranceId " +
+                            "and i.birthday = :birthday " +
+                            "and i.genderCode = :genderCode " +
+                            "and i.isShared = :isShared " +
                             "and i.name = :name and (i.endDate is null or i.endDate > :startDate)", Caregiver.class)
                     .setParameter("insuranceId", insuranceId)
-                    .setParameter("name", name)
-                    .setParameter("startDate", startDate)
+                    .setParameter("name", request.getName())
+                    .setParameter("birthday", request.getBirthday())
+                    .setParameter("genderCode", request.getGenderCode())
+                    .setParameter("isShared", request.getIsShared())
+                    .setParameter("startDate", request.getStartDate())
                     .getSingleResult();
             return true;
         } catch (NoResultException e) {

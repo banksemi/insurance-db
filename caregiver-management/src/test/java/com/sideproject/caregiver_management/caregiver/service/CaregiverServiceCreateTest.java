@@ -164,4 +164,40 @@ public class CaregiverServiceCreateTest {
 
         assertThrows(CaregiverStartDateBeforeNowException.class, ()->caregiverService.addCaregiver(insurance, request));
     }
+
+    @Test
+    @DisplayName("개인 간병과 공동 간병 그룹끼리는 중복 체크를 하지 않아야함")
+    void createCaregiver_differentGroupType_noDuplicateCheck() {
+        CaregiverCreateRequest request = createRequest(LocalDate.of(2024, 9, 1));
+        request.setIsShared(false);
+        caregiverService.addCaregiver(insurance, request);
+
+        request.setIsShared(true);
+        caregiverService.addCaregiver(insurance, request);
+
+        request.setIsShared(false);
+        assertThrows(CaregiverDuplicateException.class, ()->caregiverService.addCaregiver(
+                insurance,
+                request
+        ));
+    }
+
+    @Test
+    @DisplayName("이름, 생년월일, 성별이 다른 경우 중복으로 취급하지 않음")
+    void createCaregiver_differentField() {
+        CaregiverCreateRequest request = createRequest(LocalDate.of(2024, 9, 1));
+        request.setGenderCode(0);
+        request.setName("이름");
+        request.setBirthday(LocalDate.of(2024, 10, 1));
+        caregiverService.addCaregiver(insurance, request);
+
+        request.setName("이름2");
+        caregiverService.addCaregiver(insurance, request);
+
+        request.setBirthday(LocalDate.of(2024, 10, 2));
+        caregiverService.addCaregiver(insurance, request);
+
+        request.setGenderCode(1);
+        caregiverService.addCaregiver(insurance, request);
+    }
 }

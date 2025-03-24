@@ -56,7 +56,7 @@ public class CaregiverServiceImpl implements CaregiverService {
 
         caregiver.calculateAmounts(calculator);
 
-        if (caregiverRepository.isDuplicatedCaregiver(insurance.getId(), caregiver.getName(), caregiver.getStartDate()))
+        if (caregiverRepository.isDuplicatedCaregiver(insurance.getId(), request))
             throw new CaregiverDuplicateException();
 
         caregiverRepository.save(caregiver);
