@@ -19,6 +19,7 @@ import java.util.Optional;
 @Getter
 @Builder
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Caregiver {
     public Caregiver(Insurance insurance, Boolean isShared) {
@@ -31,7 +32,7 @@ public class Caregiver {
     @Column(name="caregiver_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "insurance_id", nullable = false)
     private Insurance insurance;
 

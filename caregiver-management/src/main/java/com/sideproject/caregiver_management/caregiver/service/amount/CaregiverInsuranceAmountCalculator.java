@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface CaregiverInsuranceAmountCalculator {
+    Long getContractDays(Caregiver caregiver);
     Long getInsuranceAmount(Caregiver caregiver);
     Long getRefundAmount(Caregiver caregiver);
 }

@@ -4,9 +4,9 @@ import com.sideproject.caregiver_management.common.dto.HTTPStatusAnnotation;
 import com.sideproject.caregiver_management.common.exception.KnownException;
 import org.springframework.http.HttpStatus;
 
-@HTTPStatusAnnotation(HttpStatus.BAD_REQUEST)
-public class CaregiverEndDateAfterContractEndException extends KnownException {
-    public CaregiverEndDateAfterContractEndException() {
-        super("만료일은 보험 만료일 이후로 설정할 수 없습니다.");
+@HTTPStatusAnnotation(HttpStatus.NOT_FOUND)
+public class NotFoundCaregiverException extends KnownException {
+    public NotFoundCaregiverException() {
+        super("간병인 정보를 찾을 수 없습니다.");
     }
 }

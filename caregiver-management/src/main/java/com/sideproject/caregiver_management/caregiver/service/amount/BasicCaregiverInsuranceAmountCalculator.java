@@ -15,7 +15,8 @@ public class BasicCaregiverInsuranceAmountCalculator implements CaregiverInsuran
         return caregiver.getEndDate() != null && caregiver.getEndDate().isEqual(caregiver.getStartDate());
     }
 
-    private long calculateContractDays(Caregiver caregiver) {
+    @Override
+    public Long getContractDays(Caregiver caregiver) {
         Insurance insurance = caregiver.getInsurance();
         return ChronoUnit.DAYS.between(caregiver.getStartDate(), insurance.getEndDate());
     }
@@ -29,7 +30,7 @@ public class BasicCaregiverInsuranceAmountCalculator implements CaregiverInsuran
         long baseAmount = caregiver.getIsShared() ? insurance.getSharedInsuranceFee() : insurance.getPersonalInsuranceFee();
 
         // 보험 금액은 항상 병원 보험의 종료일을 기준으로 계산
-        return Math.round((double)baseAmount * calculateContractDays(caregiver) / insurance.getDays());
+        return Math.round((double)baseAmount * getContractDays(caregiver) / insurance.getDays());
     }
 
     @Override
@@ -43,6 +44,6 @@ public class BasicCaregiverInsuranceAmountCalculator implements CaregiverInsuran
         // 사용하지 않은 날짜에 대해서는 환불액 측정
         // (반올림 처리되어있는) 청구된 보험료 기준으로 계산해야함
         long unusedDays = ChronoUnit.DAYS.between(caregiver.getEndDate(), caregiver.getInsurance().getEndDate());
-        return Math.round((double) getInsuranceAmount(caregiver) * unusedDays / calculateContractDays(caregiver));
+        return Math.round((double) getInsuranceAmount(caregiver) * unusedDays / getContractDays(caregiver));
     }
 }

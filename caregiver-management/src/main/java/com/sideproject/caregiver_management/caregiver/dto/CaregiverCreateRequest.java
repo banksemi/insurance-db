@@ -1,20 +1,18 @@
 package com.sideproject.caregiver_management.caregiver.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CaregiverCreateRequest {
     private String name;
     private Boolean isShared;
     private LocalDate birthday;
-    private Integer gender;
+    private Integer genderCode;
     private LocalDate startDate;
 }
