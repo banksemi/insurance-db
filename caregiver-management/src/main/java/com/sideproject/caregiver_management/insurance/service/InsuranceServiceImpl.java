@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class InsuranceServiceImpl implements InsuranceService {
     private final TenantService tenantService;
     private final InsuranceRepository insuranceRepository;
 
     @Override
+    @Transactional
     public Long createInsurance(Long userId, InsuranceUpdateRequest updateRequest) throws NotFoundUserException, DuplicateInsuranceException {
         if (insuranceRepository.findByUserID(userId).isPresent()) {
             throw new DuplicateInsuranceException("이미 보험 정보가 생성되어있습니다.");
@@ -35,7 +35,8 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
-    public Insurance getInsurance(Long userId) throws NotFoundInsuranceException {
+    @Transactional(readOnly = true)
+    public Insurance getInsuranceByUserId(Long userId) throws NotFoundInsuranceException {
         Optional<Insurance> insurance = insuranceRepository.findByUserID(userId);
         if (insurance.isPresent()) {
             return insurance.get();
@@ -45,6 +46,18 @@ public class InsuranceServiceImpl implements InsuranceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Insurance getInsuranceById(Long id) throws NotFoundInsuranceException {
+        Optional<Insurance> insurance = insuranceRepository.findById(id);
+        if (insurance.isPresent()) {
+            return insurance.get();
+        } else {
+            throw new NotFoundInsuranceException("보험 정보를 찾을 수 없습니다.");
+        }
+    }
+
+    @Override
+    @Transactional
     public void updateInsurance(Long userId, InsuranceUpdateRequest updateRequest) throws NotFoundInsuranceException {
         Optional<Insurance> insurance = insuranceRepository.findByUserID(userId);
         if (insurance.isEmpty())

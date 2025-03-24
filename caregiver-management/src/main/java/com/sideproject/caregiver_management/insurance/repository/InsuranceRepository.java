@@ -1,6 +1,7 @@
 package com.sideproject.caregiver_management.insurance.repository;
 
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
+import com.sideproject.caregiver_management.insurance.exception.NotFoundInsuranceException;
 import com.sideproject.caregiver_management.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -16,6 +17,10 @@ public class InsuranceRepository {
 
     public void save(Insurance insurance){
         em.persist(insurance);
+    }
+
+    public Optional<Insurance> findById(Long id) {
+        return Optional.ofNullable(em.find(Insurance.class, id));
     }
 
     public Optional<Insurance> findByUserID(Long userId){

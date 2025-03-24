@@ -66,10 +66,10 @@ class InsuranceServiceImplTest {
     }
 
     @Test
-    void getInsurance() {
+    void getInsuranceByUserId() {
         insuranceService.createInsurance(defaultUserId, defaultRequest);
 
-        Insurance insurance = insuranceService.getInsurance(defaultUserId);
+        Insurance insurance = insuranceService.getInsuranceByUserId(defaultUserId);
         assertEquals(insurance.getUser().getId(), defaultUserId);
         assertEquals(insurance.getPolicyNumber(), defaultRequest.getPolicyNumber());
         assertEquals(insurance.getPersonalInsuranceFee(), defaultRequest.getPersonalInsuranceFee());
@@ -79,9 +79,9 @@ class InsuranceServiceImplTest {
     }
 
     @Test
-    void getInsurance_ThrowsNotFoundInsuranceException() {
-        assertThrows(NotFoundInsuranceException.class, ()->insuranceService.getInsurance(-1L));
-        assertThrows(NotFoundInsuranceException.class, ()->insuranceService.getInsurance(defaultUserId));
+    void getInsurance_ThrowsNotFoundInsuranceByUserIdException() {
+        assertThrows(NotFoundInsuranceException.class, ()->insuranceService.getInsuranceByUserId(-1L));
+        assertThrows(NotFoundInsuranceException.class, ()->insuranceService.getInsuranceByUserId(defaultUserId));
     }
 
     @Test
@@ -100,10 +100,10 @@ class InsuranceServiceImplTest {
                         .policyNumber("333")
                 .build());
 
-        assertEquals(insuranceService.getInsurance(defaultUserId).getStartDate(), LocalDate.now().minusDays(1));
-        assertEquals(insuranceService.getInsurance(defaultUserId).getEndDate(), LocalDate.now().plusDays(1));
-        assertEquals(insuranceService.getInsurance(defaultUserId).getPolicyNumber(), "333");
-        assertEquals(insuranceService.getInsurance(defaultUserId).getPersonalInsuranceFee(), 1L);
-        assertEquals(insuranceService.getInsurance(defaultUserId).getSharedInsuranceFee(), 2L);
+        assertEquals(insuranceService.getInsuranceByUserId(defaultUserId).getStartDate(), LocalDate.now().minusDays(1));
+        assertEquals(insuranceService.getInsuranceByUserId(defaultUserId).getEndDate(), LocalDate.now().plusDays(1));
+        assertEquals(insuranceService.getInsuranceByUserId(defaultUserId).getPolicyNumber(), "333");
+        assertEquals(insuranceService.getInsuranceByUserId(defaultUserId).getPersonalInsuranceFee(), 1L);
+        assertEquals(insuranceService.getInsuranceByUserId(defaultUserId).getSharedInsuranceFee(), 2L);
     }
 }

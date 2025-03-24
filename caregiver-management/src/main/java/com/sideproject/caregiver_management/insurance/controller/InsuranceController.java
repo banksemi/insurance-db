@@ -1,14 +1,10 @@
 package com.sideproject.caregiver_management.insurance.controller;
 
-import com.sideproject.caregiver_management.auth.LoginSession;
 import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.service.AuthorizationService;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceResponse;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import com.sideproject.caregiver_management.insurance.service.InsuranceService;
-import com.sideproject.caregiver_management.user.dto.UserResponse;
-import com.sideproject.caregiver_management.user.entity.User;
-import com.sideproject.caregiver_management.user.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +22,7 @@ public class InsuranceController {
     @Auth(Auth.Role.ROLE_USER)
     public InsuranceResponse getInsurance(@PathVariable("userId") Long userId) {
         authorizationService.validateAccessToUser(userId);
-        Insurance insurance = insuranceService.getInsurance(userId);
+        Insurance insurance = insuranceService.getInsuranceByUserId(userId);
         return InsuranceResponse.builder()
                 .startDate(insurance.getStartDate())
                 .endDate(insurance.getEndDate())

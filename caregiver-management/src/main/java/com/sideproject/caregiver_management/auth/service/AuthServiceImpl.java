@@ -22,6 +22,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthTokenService authTokenService;
 
     @Override
+    @Transactional
     public LoginResponse login(String loginId, String password) throws LoginIdNotMatchException, PasswordNotMatchException {
         Optional<User> user = userRepository.findByLoginId(loginId);
         if (user.isEmpty()) {
