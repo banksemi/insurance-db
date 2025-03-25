@@ -1,7 +1,7 @@
-package com.sideproject.caregiver_management.auth.service;
+package com.sideproject.caregiver_management.password.service;
 
-import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
-import com.sideproject.caregiver_management.auth.service.password_algorithm.PasswordAlgorithm;
+import com.sideproject.caregiver_management.password.dto.EncodedPassword;
+import com.sideproject.caregiver_management.password.service.algorithm.PasswordAlgorithm;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

@@ -4,6 +4,7 @@ import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginInfo;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.exception.*;
+import com.sideproject.caregiver_management.password.service.PasswordService;
 import com.sideproject.caregiver_management.user.entity.User;
 import com.sideproject.caregiver_management.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

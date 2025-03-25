@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.auth.dto;
+package com.sideproject.caregiver_management.password.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

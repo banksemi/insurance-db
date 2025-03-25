@@ -1,6 +1,6 @@
-package com.sideproject.caregiver_management.auth.converter;
+package com.sideproject.caregiver_management.password.converter;
 
-import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
+import com.sideproject.caregiver_management.password.dto.EncodedPassword;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

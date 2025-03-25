@@ -1,4 +1,4 @@
-package com.sideproject.caregiver_management.auth.service.password_algorithm;
+package com.sideproject.caregiver_management.password.service.algorithm;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.sideproject.caregiver_management.user.entity;
 
-import com.sideproject.caregiver_management.auth.converter.EncodedPasswordConverter;
-import com.sideproject.caregiver_management.auth.dto.EncodedPassword;
+import com.sideproject.caregiver_management.password.converter.EncodedPasswordConverter;
+import com.sideproject.caregiver_management.password.dto.EncodedPassword;
 import jakarta.persistence.*;
 import lombok.*;
 
