@@ -28,6 +28,10 @@ class EncodedPasswordConverterTest {
         assertThrows(IllegalArgumentException.class, () -> converter.convertToDatabaseColumn(
                 new EncodedPassword("module", "password:")
         ));
+
+
+        assertThrows(IllegalArgumentException.class, () -> converter.convertToDatabaseColumn(null));
+
     }
 
     @Test
@@ -44,5 +48,7 @@ class EncodedPasswordConverterTest {
     void convertToEntityAttribute_invalidFormat() {
         assertThrows(IllegalArgumentException.class, () -> converter.convertToEntityAttribute("invalid"));
         assertThrows(IllegalArgumentException.class, () -> converter.convertToEntityAttribute("a:b:c"));
+        assertThrows(IllegalArgumentException.class, () -> converter.convertToEntityAttribute(""));
+        assertThrows(IllegalArgumentException.class, () -> converter.convertToEntityAttribute(null));
     }
 }
