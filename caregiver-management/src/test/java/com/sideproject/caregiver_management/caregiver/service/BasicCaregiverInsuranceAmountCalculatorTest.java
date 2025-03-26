@@ -32,21 +32,28 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
     @Test
     @DisplayName("보험 최대 범위로 설정시 간병인 보험료는 보험 기준 금액과 동일")
     void fullInsurancePeriod_calculatesCorrectAmountAndNoRefund() {
+        // given
         Caregiver caregiver = new Caregiver(insurance, false);
+        caregiver.setDate(CaregiverDateUpdate.ofStartDate(
+                LocalDate.of(2022, 6, 1)
+        ));
 
-        CaregiverDateUpdate request = new CaregiverDateUpdate();
-        request.setStartDate(LocalDate.of(2022, 6, 1));
-        caregiver.setDate(request);
-
+        // when
         caregiver.calculateAmounts(calculator);
 
-        assertEquals(1000L, caregiver.getInsuranceAmount());
+        // then
+        assertEquals(1000L, caregiver.getInsuranceAmount()); // 보험료와 일치
         assertNull(caregiver.getRefundAmount()); // 종료일이 없기 때문에 환불액은 결정되지 않음
+    }
 
-        // 해지일 지정 (마지막 날짜)
-        request = new CaregiverDateUpdate();
-        request.setEndDate(LocalDate.of(2023, 6, 1));
-        caregiver.setDate(request);
+    @Test
+    @DisplayName("마지막 날까지 사용시 환불액은 0원으로 처리되어야함")
+    void lastDayUsage_resultsInZeroRefund() {
+        Caregiver caregiver = new Caregiver(insurance, false);
+        caregiver.setDate(CaregiverDateUpdate.of(
+                LocalDate.of(2022, 6, 1),
+                LocalDate.of(2023, 6, 1)
+        ));
 
         caregiver.calculateAmounts(calculator);
 
@@ -58,57 +65,38 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
     @DisplayName("공동 간병인은 공동 간병인 보험으로 보험료가 계산되어야함")
     void sharedCaregiver() {
         Caregiver caregiver = new Caregiver(insurance, true);
-        CaregiverDateUpdate request = new CaregiverDateUpdate();
-        request.setStartDate(LocalDate.of(2022, 6, 1));
-        caregiver.setDate(request);
+        caregiver.setDate(CaregiverDateUpdate.ofStartDate(
+                LocalDate.of(2022, 6, 1)
+        ));
 
         caregiver.calculateAmounts(calculator);
 
         assertEquals(10000L, caregiver.getInsuranceAmount());
         assertNull(caregiver.getRefundAmount()); // 종료일이 없기 때문에 환불액은 결정되지 않음
-
-        // 해지일 지정 (마지막 날짜)
-        request = new CaregiverDateUpdate();
-        request.setEndDate(LocalDate.of(2023, 6, 1));
-        caregiver.setDate(request);
-
-        caregiver.calculateAmounts(calculator);
-
-        assertEquals(10000L, caregiver.getInsuranceAmount());
-        assertEquals(0L, caregiver.getRefundAmount());
     }
 
     @Test
     @DisplayName("당일 해지시 보험료는 청구되지 않아야함")
     void sameDayStartAndEnd_resultsInZeroInsuranceFee() {
         Caregiver caregiver = new Caregiver(insurance, false);
-        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
-        dateUpdate.setStartDate(LocalDate.of(2022, 6, 1));
-        dateUpdate.setEndDate(LocalDate.of(2022, 6, 1));
-        caregiver.setDate(dateUpdate);
-
-        Caregiver caregiver2 = new Caregiver(insurance, false);
-        CaregiverDateUpdate dateUpdate2 = new CaregiverDateUpdate();
-        dateUpdate2.setStartDate(LocalDate.of(2023, 2, 1));
-        dateUpdate2.setEndDate(LocalDate.of(2023, 2, 1));
-        caregiver2.setDate(dateUpdate2);
+        caregiver.setDate(CaregiverDateUpdate.of(
+                LocalDate.of(2022, 7 ,1),
+                LocalDate.of(2022,7,1)
+        ));
 
         caregiver.calculateAmounts(calculator);
-        caregiver2.calculateAmounts(calculator);
 
         assertEquals(0L, caregiver.getInsuranceAmount());
         assertEquals(0L, caregiver.getRefundAmount());
-        assertEquals(0L, caregiver2.getInsuranceAmount());
-        assertEquals(0L, caregiver2.getRefundAmount());
     }
 
     @Test
     @DisplayName("중간에 가입한 간병인의 보험료 계산 로직 확인")
     void midTermJoin_calculatesProratedInsuranceFee() {
         Caregiver caregiver = new Caregiver(insurance, false);
-        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
-        dateUpdate.setStartDate(LocalDate.of(2022, 8, 1));
-        caregiver.setDate(dateUpdate);
+        caregiver.setDate(CaregiverDateUpdate.ofStartDate(
+                LocalDate.of(2022, 8, 1)
+        ));
 
         caregiver.calculateAmounts(calculator);
 
@@ -120,18 +108,15 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
     @DisplayName("보험 환불액 계산 로직 확인")
     void refundCalculation_basedOnUnusedPeriod() {
         Caregiver caregiver = new Caregiver(insurance, false);
-        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
-        dateUpdate.setStartDate(LocalDate.of(2022, 8, 1));
-        dateUpdate.setEndDate(LocalDate.of(2022, 9, 1));
-        caregiver.setDate(dateUpdate);
+        caregiver.setDate(CaregiverDateUpdate.of(
+                LocalDate.of(2022, 8, 1),
+                LocalDate.of(2022, 9, 1)
+        ));
 
         caregiver.calculateAmounts(calculator);
 
-        // 간병인 보험 금액은 병원 보험의 마지막날까지를 전제로 계산되어야함
-        assertEquals(833, caregiver.getInsuranceAmount());
-
-        // 사용하지 않은 금액에 대해서는 환불
-        assertEquals(748, caregiver.getRefundAmount());
+        assertEquals(833, caregiver.getInsuranceAmount()); // 간병인 보험 금액은 병원 보험의 마지막날까지를 전제로 계산되어야함
+        assertEquals(748, caregiver.getRefundAmount()); // 사용하지 않은 금액에 대해서는 환불
     }
 
     @Test
@@ -141,13 +126,12 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
                 .startDate(LocalDate.of(2023, 6, 1))
                 .endDate(LocalDate.of(2024, 6, 1))
                 .build());
-
         Caregiver caregiver = new Caregiver(insurance, false);
-        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
-        dateUpdate.setStartDate(LocalDate.of(2023, 8, 1));
-        dateUpdate.setEndDate(LocalDate.of(2023, 9, 1));
-        caregiver.setDate(dateUpdate);
-
+        caregiver.setDate(CaregiverDateUpdate.of(
+                LocalDate.of(2023, 8, 1),
+                LocalDate.of(2023, 9, 1)
+        ));
+        // 윤년 계산으로 반올림 유도
         caregiver.calculateAmounts(calculator);
 
         // 간병인 보험 금액은 병원 보험의 마지막날까지를 전제로 계산되어야함

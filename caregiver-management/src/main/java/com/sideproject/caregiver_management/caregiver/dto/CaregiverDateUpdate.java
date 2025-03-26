@@ -23,4 +23,23 @@ public class CaregiverDateUpdate {
         this.endDate = endDate;
         this.updateEndDate = true;
     }
+
+    public static CaregiverDateUpdate of(LocalDate startDate, LocalDate endDate) {
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setStartDate(startDate);
+        dateUpdate.setEndDate(endDate);
+        return dateUpdate;
+    }
+
+    public static CaregiverDateUpdate ofStartDate(LocalDate startDate) {
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setStartDate(startDate);
+        return dateUpdate;
+    }
+
+    public static CaregiverDateUpdate ofEndDate(LocalDate endDate) {
+        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
+        dateUpdate.setEndDate(endDate);
+        return dateUpdate;
+    }
 }

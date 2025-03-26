@@ -50,9 +50,7 @@ public class CaregiverServiceImpl implements CaregiverService {
         caregiver.setName(request.getName());
         caregiver.setIsApproved(false);
 
-        CaregiverDateUpdate dateUpdate = new CaregiverDateUpdate();
-        dateUpdate.setStartDate(request.getStartDate());
-        caregiver.setDate(dateUpdate);
+        caregiver.setDate(CaregiverDateUpdate.ofStartDate(request.getStartDate()));
 
         caregiver.calculateAmounts(calculator);
 
@@ -68,10 +66,7 @@ public class CaregiverServiceImpl implements CaregiverService {
     @Override
     public void requestEndDate(Long caregiverId, LocalDate endDate) {
         Caregiver caregiver = getCaregiver(caregiverId);  // throw NotFoundCaregiverException
-        CaregiverDateUpdate update = new CaregiverDateUpdate();
-        update.setEndDate(endDate);
-
-        caregiver.setDate(update);
+        caregiver.setDate(CaregiverDateUpdate.ofEndDate(endDate));
         caregiver.calculateAmounts(calculator);
     }
 
@@ -88,10 +83,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .isShared(request.getIsShared())
                 .build();
 
-        CaregiverDateUpdate update = new CaregiverDateUpdate();
-        update.setStartDate(request.getStartDate());
-
-        dummyCaregiver.setDate(update);
+        dummyCaregiver.setDate(CaregiverDateUpdate.ofStartDate(request.getStartDate()));
 
         return CaregiverEstimateResponse.builder()
                 .contractDays(calculator.getContractDays(dummyCaregiver))
