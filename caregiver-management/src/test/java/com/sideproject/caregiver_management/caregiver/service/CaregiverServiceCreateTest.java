@@ -51,7 +51,7 @@ public class CaregiverServiceCreateTest {
         Mockito.when(clock.instant()).thenReturn(fixedClock.instant());
         Mockito.when(clock.getZone()).thenReturn(fixedClock.getZone());
 
-        Long tenantId = tenantService.createTenant("Tenent");
+        Long tenantId = tenantService.createTenant("Tenant");
         Long userId = tenantService.createUser(tenantId,
                 UserCreateRequest.builder()
                         .loginId("loginId")

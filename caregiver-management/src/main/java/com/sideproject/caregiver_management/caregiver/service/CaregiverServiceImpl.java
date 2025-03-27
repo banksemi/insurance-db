@@ -26,7 +26,15 @@ public class CaregiverServiceImpl implements CaregiverService {
 
     @Override
     public List<Caregiver> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
-        return List.of();
+        if (searchCondition.getIsShared() != null) {
+            // TODO: 필터링 기능 구현 필요
+            throw new UnsupportedOperationException();
+        }
+        if (searchCondition.getSortBy() != CaregiverSortType.ID){
+            // TODO: 정렬 기능 구현 필요
+            throw new UnsupportedOperationException();
+        }
+        return caregiverRepository.findAllByInsuranceId(insurance.getId());
     }
 
     @Override

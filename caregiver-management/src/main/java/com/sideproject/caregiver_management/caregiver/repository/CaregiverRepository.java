@@ -10,6 +10,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,16 @@ public class CaregiverRepository {
 
     public void save(Caregiver caregiver) {
         em.persist(caregiver);
+    }
+
+    public List<Caregiver> findAllByInsuranceId(Long insuranceId) {
+        try {
+            return em.createQuery("select i from Caregiver i where i.insurance.id = :insuranceId", Caregiver.class)
+                    .setParameter("insuranceId", insuranceId)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return List.of();
+        }
     }
 
     public boolean isDuplicatedCaregiver(Long insuranceId, CaregiverCreateRequest request) {
