@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class CaregiverServiceTest {
     @MockitoBean
     private Clock clock;
@@ -66,9 +68,9 @@ class CaregiverServiceTest {
         return insuranceService.getInsuranceById(insuranceId);
     }
 
-    private Long createCaregiver(Insurance insurance, String name, LocalDate startDate) {
+    private Long createCaregiver(Insurance insurance, String name, LocalDate startDate, Boolean isShared) {
         return caregiverService.addCaregiver(insurance, CaregiverCreateRequest.builder()
-                .isShared(false)
+                .isShared(isShared)
                 .genderCode(0)
                 .birthday(LocalDate.of(2000, 1, 1))
                 .name(name)
@@ -99,9 +101,9 @@ class CaregiverServiceTest {
     void getCaregivers_SortingID() {
         // given
         Insurance insurance = createInsurance();
-        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1));
-        Long id2 = createCaregiver(insurance, "이름3", LocalDate.of(2024, 9, 3));
-        Long id3 = createCaregiver(insurance, "이름2", LocalDate.of(2024, 9, 2));
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), false);
+        Long id2 = createCaregiver(insurance, "이름3", LocalDate.of(2024, 9, 3), false);
+        Long id3 = createCaregiver(insurance, "이름2", LocalDate.of(2024, 9, 2), false);
         final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
 
         // when
@@ -115,5 +117,53 @@ class CaregiverServiceTest {
         // then
         assertEquals(3, sortedCaregivers.size());
         assertEquals(List.of(id1, id2, id3), sortedCaregivers.stream().map(Caregiver::getId).toList());
+    }
+
+    @Test
+    @DisplayName("공동 간병인만 보기")
+    void getCaregivers_FilterShared() {
+        // given
+        Insurance insurance = createInsurance();
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
+        Long id2 = createCaregiver(insurance, "이름3", LocalDate.of(2024, 9, 3), false);
+        Long id3 = createCaregiver(insurance, "이름2", LocalDate.of(2024, 9, 2), true);
+        final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
+
+        // when
+        List<Caregiver> filteredCaregivers = caregiverService.getCaregivers(
+                insurance,
+                CaregiverSearchCondition.builder()
+                        .sortBy(SORT_BY_ID)
+                        .isShared(true)
+                        .build()
+        );
+
+        // then
+        assertEquals(2, filteredCaregivers.size());
+        assertEquals(List.of(id1, id3), filteredCaregivers.stream().map(Caregiver::getId).toList());
+    }
+
+    @Test
+    @DisplayName("개인 간병인만 보기")
+    void getCaregivers_FilterPersonal() {
+        // given
+        Insurance insurance = createInsurance();
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
+        Long id2 = createCaregiver(insurance, "이름3", LocalDate.of(2024, 9, 3), false);
+        Long id3 = createCaregiver(insurance, "이름2", LocalDate.of(2024, 9, 2), true);
+        final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
+
+        // when
+        List<Caregiver> filteredCaregivers = caregiverService.getCaregivers(
+                insurance,
+                CaregiverSearchCondition.builder()
+                        .sortBy(SORT_BY_ID)
+                        .isShared(false)
+                        .build()
+        );
+
+        // then
+        assertEquals(1, filteredCaregivers.size());
+        assertEquals(List.of(id2), filteredCaregivers.stream().map(Caregiver::getId).toList());
     }
 }

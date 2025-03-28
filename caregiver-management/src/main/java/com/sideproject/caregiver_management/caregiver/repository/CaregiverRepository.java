@@ -1,17 +1,15 @@
 package com.sideproject.caregiver_management.caregiver.repository;
 
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverSearchCondition;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
-import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,11 +24,22 @@ public class CaregiverRepository {
         em.persist(caregiver);
     }
 
-    public List<Caregiver> findAllByInsuranceId(Long insuranceId) {
+    public List<Caregiver> findAllByInsuranceId(Long insuranceId, CaregiverSearchCondition searchCondition) {
         try {
-            return em.createQuery("select i from Caregiver i where i.insurance.id = :insuranceId", Caregiver.class)
-                    .setParameter("insuranceId", insuranceId)
-                    .getResultList();
+            StringBuilder queryBuilder = new StringBuilder("select i from Caregiver i where i.insurance.id = :insuranceId");
+
+            if (searchCondition.getIsShared() != null) {
+                queryBuilder.append(" and i.isShared = :isShared");
+            }
+
+            TypedQuery<Caregiver> query = em.createQuery(queryBuilder.toString(), Caregiver.class);
+            query.setParameter("insuranceId", insuranceId);
+
+            if (searchCondition.getIsShared() != null) {
+                query.setParameter("isShared", searchCondition.getIsShared());
+            }
+
+            return query.getResultList();
         } catch (NoResultException e) {
             return List.of();
         }
