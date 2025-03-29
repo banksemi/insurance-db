@@ -1,15 +1,16 @@
 package com.sideproject.caregiver_management.caregiver.service;
 
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverResponse;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverSearchCondition;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverSortType;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
+import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import com.sideproject.caregiver_management.insurance.service.InsuranceService;
 import com.sideproject.caregiver_management.user.dto.UserCreateRequest;
 import com.sideproject.caregiver_management.user.service.TenantService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -85,7 +86,7 @@ class CaregiverServiceTest {
         Insurance insurance = createInsurance();
 
         // when
-        List<Caregiver> result = caregiverService.getCaregivers(
+        ListResponse<CaregiverResponse> result = caregiverService.getCaregivers(
                 insurance,
                 CaregiverSearchCondition.builder()
                         .sortBy(CaregiverSortType.ID)
@@ -93,7 +94,7 @@ class CaregiverServiceTest {
         );
 
         // then
-        assertEquals(0, result.size());
+        assertEquals(0, result.getCount());
     }
 
     @Test
@@ -107,7 +108,7 @@ class CaregiverServiceTest {
         final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
 
         // when
-        List<Caregiver> sortedCaregivers = caregiverService.getCaregivers(
+        ListResponse<CaregiverResponse> sortedCaregivers = caregiverService.getCaregivers(
                 insurance,
                 CaregiverSearchCondition.builder()
                         .sortBy(SORT_BY_ID)
@@ -115,8 +116,8 @@ class CaregiverServiceTest {
         );
 
         // then
-        assertEquals(3, sortedCaregivers.size());
-        assertEquals(List.of(id1, id2, id3), sortedCaregivers.stream().map(Caregiver::getId).toList());
+        assertEquals(3, sortedCaregivers.getCount());
+        assertEquals(List.of(id1, id2, id3), sortedCaregivers.getData().stream().map(CaregiverResponse::getId).toList());
     }
 
     @Test
@@ -130,7 +131,7 @@ class CaregiverServiceTest {
         final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
 
         // when
-        List<Caregiver> filteredCaregivers = caregiverService.getCaregivers(
+        ListResponse<CaregiverResponse> filteredCaregivers = caregiverService.getCaregivers(
                 insurance,
                 CaregiverSearchCondition.builder()
                         .sortBy(SORT_BY_ID)
@@ -139,8 +140,8 @@ class CaregiverServiceTest {
         );
 
         // then
-        assertEquals(2, filteredCaregivers.size());
-        assertEquals(List.of(id1, id3), filteredCaregivers.stream().map(Caregiver::getId).toList());
+        assertEquals(2, filteredCaregivers.getCount());
+        assertEquals(List.of(id1, id3), filteredCaregivers.getData().stream().map(CaregiverResponse::getId).toList());
     }
 
     @Test
@@ -154,7 +155,7 @@ class CaregiverServiceTest {
         final CaregiverSortType SORT_BY_ID = CaregiverSortType.ID;
 
         // when
-        List<Caregiver> filteredCaregivers = caregiverService.getCaregivers(
+        ListResponse<CaregiverResponse> filteredCaregivers = caregiverService.getCaregivers(
                 insurance,
                 CaregiverSearchCondition.builder()
                         .sortBy(SORT_BY_ID)
@@ -163,8 +164,8 @@ class CaregiverServiceTest {
         );
 
         // then
-        assertEquals(1, filteredCaregivers.size());
-        assertEquals(List.of(id2), filteredCaregivers.stream().map(Caregiver::getId).toList());
+        assertEquals(1, filteredCaregivers.getCount());
+        assertEquals(List.of(id2), filteredCaregivers.getData().stream().map(CaregiverResponse::getId).toList());
     }
 
     @Test
@@ -178,7 +179,7 @@ class CaregiverServiceTest {
         Long id4 = createCaregiver(insurance, "이름4", LocalDate.of(2024, 9, 4), false);
 
         // when
-        List<Caregiver> sortedCaregivers = caregiverService.getCaregivers(
+        ListResponse<CaregiverResponse> sortedCaregivers = caregiverService.getCaregivers(
                 insurance,
                 CaregiverSearchCondition.builder()
                         .sortBy(CaregiverSortType.NAME)
@@ -186,7 +187,7 @@ class CaregiverServiceTest {
         );
 
         // then
-        assertEquals(4, sortedCaregivers.size());
-        assertEquals(List.of(id1, id3, id2, id4), sortedCaregivers.stream().map(Caregiver::getId).toList());
+        assertEquals(4, sortedCaregivers.getCount());
+        assertEquals(List.of(id1, id3, id2, id4), sortedCaregivers.getData().stream().map(CaregiverResponse::getId).toList());
     }
 }

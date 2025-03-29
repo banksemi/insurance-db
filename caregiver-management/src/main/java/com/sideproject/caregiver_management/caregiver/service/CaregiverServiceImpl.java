@@ -7,6 +7,7 @@ import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDa
 import com.sideproject.caregiver_management.caregiver.exception.NotFoundCaregiverException;
 import com.sideproject.caregiver_management.caregiver.repository.CaregiverRepository;
 import com.sideproject.caregiver_management.caregiver.service.amount.CaregiverInsuranceAmountCalculator;
+import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,32 @@ public class CaregiverServiceImpl implements CaregiverService {
     private final CaregiverInsuranceAmountCalculator calculator;
     private final CaregiverRepository caregiverRepository;
 
+    private CaregiverResponse toDto(Caregiver caregiver) {
+        return CaregiverResponse.builder()
+                .id(caregiver.getId())
+                .name(caregiver.getName())
+                .isShared(caregiver.getIsShared())
+                .birthday(caregiver.getBirthday())
+                .genderCode(caregiver.getGenderCode())
+                .startDate(caregiver.getStartDate())
+                .endDate(caregiver.getEndDate())
+                .build();
+    }
 
     @Override
-    public List<Caregiver> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
+    public ListResponse<CaregiverResponse> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
         if (searchCondition.getSortBy() == CaregiverSortType.MEMO) {
             throw new UnsupportedOperationException("Not yet implemented");
         }
+        List<Caregiver> caregivers = caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition);
 
-        return caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition);
+        List<CaregiverResponse> dtoList = caregivers.stream().map(this::toDto).toList(); // 자바 16 이상
+        // caregivers.forEach(caregiver -> dtoList.add(toDto(caregiver)));
+
+        return ListResponse.<CaregiverResponse>builder()
+                .count(dtoList.size())
+                .data(dtoList)
+                .build();
     }
 
     @Override
