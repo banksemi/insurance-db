@@ -32,6 +32,10 @@ public class CaregiverRepository {
                 queryBuilder.append(" and i.isShared = :isShared");
             }
 
+            if (searchCondition.getSortBy() != null) {
+                queryBuilder.append(" ORDER BY ").append(searchCondition.getSortBy().getField()).append(" ASC");
+            }
+
             TypedQuery<Caregiver> query = em.createQuery(queryBuilder.toString(), Caregiver.class);
             query.setParameter("insuranceId", insuranceId);
 

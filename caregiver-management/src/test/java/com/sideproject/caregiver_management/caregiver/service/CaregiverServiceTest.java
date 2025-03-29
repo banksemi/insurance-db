@@ -166,4 +166,27 @@ class CaregiverServiceTest {
         assertEquals(1, filteredCaregivers.size());
         assertEquals(List.of(id2), filteredCaregivers.stream().map(Caregiver::getId).toList());
     }
+
+    @Test
+    @DisplayName("간병인 목록 정렬 테스트 (이름순 정렬)")
+    void getCaregivers_SortByName() {
+        // given
+        Insurance insurance = createInsurance();
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 3), true);
+        Long id2 = createCaregiver(insurance, "이름3", LocalDate.of(2024, 9, 2), false);
+        Long id3 = createCaregiver(insurance, "이름2", LocalDate.of(2024, 9, 2), true);
+        Long id4 = createCaregiver(insurance, "이름4", LocalDate.of(2024, 9, 4), false);
+
+        // when
+        List<Caregiver> sortedCaregivers = caregiverService.getCaregivers(
+                insurance,
+                CaregiverSearchCondition.builder()
+                        .sortBy(CaregiverSortType.NAME)
+                        .build()
+        );
+
+        // then
+        assertEquals(4, sortedCaregivers.size());
+        assertEquals(List.of(id1, id3, id2, id4), sortedCaregivers.stream().map(Caregiver::getId).toList());
+    }
 }

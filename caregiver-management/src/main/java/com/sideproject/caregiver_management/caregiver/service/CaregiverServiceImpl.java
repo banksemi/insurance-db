@@ -26,10 +26,10 @@ public class CaregiverServiceImpl implements CaregiverService {
 
     @Override
     public List<Caregiver> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
-        if (searchCondition.getSortBy() != CaregiverSortType.ID){
-            // TODO: 정렬 기능 구현 필요
-            throw new UnsupportedOperationException();
+        if (searchCondition.getSortBy() == CaregiverSortType.MEMO) {
+            throw new UnsupportedOperationException("Not yet implemented");
         }
+
         return caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition);
     }
 
