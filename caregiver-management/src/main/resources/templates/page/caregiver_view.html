@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<main layout:fragment="content">
+    <script th:src="@{/page/caregiver_view.js}"></script>
+
+    <div class="header_extension">
+        <a onclick="search_save()">저장</a>
+        <input type="text" name="search_keyword" value="" oninput="search()" onkeyup="if (window.event.keyCode==13) search()">
+    </div>
+
+
+    <div class="content_sub_area">
+        <a href=""><div class="sub sub_on">전체</div></a>
+        <a href=""><div class="sub">개인 간병</div></a>
+        <a href=""><div class="sub">공동 간병</div></a>
+        <div class="option">
+            Sort
+            <label><input type="radio" name="order" onclick="changeOrder(this)" value="id">기본 (입력순)</label>
+            <label><input type="radio" name="order" onclick="changeOrder(this)" value="name">이름순</label>
+            <label><input type="radio" name="order" onclick="changeOrder(this)" value="memo">메모순</label>
+        </div>
+    </div>
+    <div class="sub_main_area">
+        <table class="style1 no_top_border center">
+            <tr>
+                <th>번호</th>
+                <th>상태</th>
+                <th>이름</th>
+                <th>주민번호</th>
+                <th>등록일 (계약일수)</th>
+                <th>해지일 (실제 경과일)</th>
+                <th>추가 보험료</th>
+                <th>환불액</th>
+                <th>계</th>
+                <th style="width:200px">메모</th>
+            </tr>
+            <tbody id="view">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="popup_area">
+        <div class="dialog" style="width:400px">
+            <div class="title">
+                <p>등록 정보</p>
+            </div>
+            <img src="/theme/img/icon_close_02.gif" class="title_button" onclick="closePopup()">
+            <div class="content">
+<span class="idinfo">
+<? if ($_SESSION['admin'] == true) { echo "강제 수정"; }
+				else { echo "해지 신청"; }?>
+</span>
+                <form>
+                    <input type="hidden" name="no" value="">
+                    <table class="style1 left input main_center input_max_width" style="width: 100%">
+
+                        <tr>
+                            <th>이름</th>
+                            <td>
+                                <span id="id" value="" class="no_admin_input"></span>
+                                <? if ($_SESSION['admin'] == true) { ?>
+                                <input type="text" name="name" class="admin_input" value="">
+                                <input type="hidden" name="type" class="admin_input" value="">
+                                <? } ?>
+                            </td>
+                        </tr>
+
+                        <? if ($_SESSION['admin'] == true) { ?>
+                        <div>
+                            <tr>
+                                <th>주민번호</th>
+                                <td><input type="text" name="birth" class="numberinput" value=""><br><span class="info_message">구분 없이 생년월일+주민번호뒤의 한자리를 입력해주세요. (ex 5101012)</span></td>
+                            </tr>
+                            <tr>
+                                <th>등록일</th>
+                                <td><input type="text" name="start" class="dateinput" value="" autocomplete=off></td>
+                            </tr>
+                            <? } ?>
+                        </div>
+                        <tr>
+                            <th>해지일</th>
+                            <td><input type="text" name="date" class="dateinput" value="" autocomplete=off></td>
+                        </tr>
+
+
+                    </table>
+                </form>
+
+                <? if ($_SESSION['admin'] == true) { ?>
+                <a onclick="Remove()" class="button_style1">완전 삭제</a>
+                <? } ?>
+                <a onclick="Termination()" class="button_style1">제출</a>
+            </div>
+        </div>
+    </div>
+
+</main>
+</html>

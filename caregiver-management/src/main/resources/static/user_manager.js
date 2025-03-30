@@ -60,9 +60,13 @@ const userManager = (function() {
             }
         }
     }
+    function getCurrentUser() {
+        return currentUser;
+    }
 
     // 모듈로 export (IIFE 리턴)
     return {
         ready,
+        getCurrentUser,
     };
 })();

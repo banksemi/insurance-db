@@ -9,12 +9,7 @@ function login() {
         url: '/api/v1/auth/login',
         success: function (data) {
             location.href = "/account/info";
-            authTokenManager.setTokens({
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
-                expireAt: data.expireAt,
-                userId: data.userId,
-            });
+            authTokenManager.setTokens(data);
         },
         error: function (jqXHR) {
             data = jqXHR.responseJSON;

@@ -23,4 +23,9 @@ public class FrontendController {
     public String caregiverRegister() {
         return "page/caregiver_register";
     }
+
+    @RequestMapping("/caregiver/view")
+    public String caregiverView() {
+        return "page/caregiver_view";
+    }
 }
