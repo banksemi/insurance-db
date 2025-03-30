@@ -160,30 +160,3 @@ function print_page_go() {
     var popOption = "width=600, height=400, resizable=no, scrollbars=no, status=no;";
     window.open(popUrl, "", popOption);
 }
-
-function getFormattedBirthDate(birth1, birth2) {
-    if (!/^\d{6}$/.test(birth1) || !/^\d{1,}$/.test(birth2)) return null;
-
-    const genderCode = parseInt(birth2.charAt(0), 10);
-    let century;
-
-    switch (genderCode) {
-        case 1: case 2: case 5: case 6:
-            century = '19';
-            break;
-        case 3: case 4: case 7: case 8:
-            century = '20';
-            break;
-        case 9: case 0:
-            century = '18';
-            break;
-        default:
-            return null; // 잘못된 코드
-    }
-
-    const year = century + birth1.slice(0, 2);
-    const month = birth1.slice(2, 4);
-    const day = birth1.slice(4, 6);
-
-    return `${year}-${month}-${day}`;
-}

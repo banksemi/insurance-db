@@ -66,7 +66,10 @@ function makeDOM(no, item) {
 	$domdata.find("td.item_no").text(no);
 	$domdata.find("td.item_status").text(item.status + " (" + insuranceName + ")");
 	$domdata.find("td.item_name").text(item.name);
-	$domdata.find("td.item_birth").text(item.birth);
+
+	$domdata.find("td.item_birth").text(
+		`${birthdayFormatter.strDateToSixDigit(item.birthday)} - ${item.genderCode}******`
+	);
 	$domdata.find("td.item_startdate").text(`${item.startDate} (${item.contractDays}일)`);
 
 	if (item.endDate) {

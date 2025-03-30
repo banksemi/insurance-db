@@ -9,7 +9,7 @@ function createCaregiver()
 		data: JSON.stringify({
 			name: $('input[name=name]').val(),
 			isShared: $('input:radio[name="isShared"]:checked').val(),
-			birthday: getFormattedBirthDate($('input[name=birth1]').val(), $('input[name=birth2]').val()),
+			birthday: birthdayFormatter.sixDigitToStrDate($('input[name=birth1]').val(), $('input[name=birth2]').val()),
 			genderCode: $('input[name=birth2]').val(),
 			startDate: $('#datepicker1').val(),
 		}),
