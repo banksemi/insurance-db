@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,4 +23,13 @@ public class CaregiverResponse {
 
     private LocalDate startDate;
     private LocalDate endDate;
+
+    private Long insuranceAmount;
+    private Long contractDays;
+    private Long refundAmount;
+
+    private String memo;
+    private LocalDateTime createdAt;
+
+    private Boolean isApproved;
 }

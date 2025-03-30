@@ -33,6 +33,12 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .genderCode(caregiver.getGenderCode())
                 .startDate(caregiver.getStartDate())
                 .endDate(caregiver.getEndDate())
+                .memo(caregiver.getMemo())
+                .insuranceAmount(caregiver.getInsuranceAmount())
+                .refundAmount(caregiver.getRefundAmount())
+                .contractDays(calculator.getContractDays(caregiver))
+                .createdAt(caregiver.getCreatedAt())
+                .isApproved(caregiver.getIsApproved())
                 .build();
     }
 

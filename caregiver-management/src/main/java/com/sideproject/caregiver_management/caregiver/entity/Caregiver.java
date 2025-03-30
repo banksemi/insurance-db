@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -69,6 +70,15 @@ public class Caregiver {
 
     @Setter
     private String memo; // 간병인에 대한 사용자 메모
+
+    @Setter
+    @Column(nullable = false)
+    private LocalDateTime createdAt; // 시스템 등록일
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public void setDate(CaregiverDateUpdate request) {
         LocalDate wantedStartDate = request.isUpdateStartDate() ? request.getStartDate() : this.startDate;
