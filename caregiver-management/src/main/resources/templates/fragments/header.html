@@ -3,15 +3,19 @@
         <a href="/"><img src="/theme/img/logo.png" class="logo2"></a>
     </div>
     <div class="info_area">
-        {{ request.user.name }}
+        <span id="user_name"></span>
         <span style="color: #c5c5c5"> 님 환영합니다.</span>
     </div>
     <a class="button" onclick="authTokenManager.logout()">로그아웃</a>
     <a class="button" onclick="print()">페이지 인쇄</a>
-    {% if request.proxied %}
-    <a class="button" onclick="login_return()">관리자 계정으로 돌아가기</a>
-    <input type="hidden" value={{ request.proxy_admin_userid }} name="first_id">
+    <a class="button" onclick="login_return()" style="display: none" id="admin_login_button">관리자 계정으로 돌아가기</a>
     <script>
+        userManager.ready((userData)=> {
+            $("#user_name").text(userData.name);
+            if (userData.isAdmin) {
+                $("#admin_login_button").show();
+            }
+        });
         function login_return() {
             $.ajax({
                 type: "POST",
@@ -28,7 +32,4 @@
             });
         }
     </script>
-    {% endif %}
-
-
 </div>

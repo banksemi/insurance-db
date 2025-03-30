@@ -29,6 +29,7 @@ public class UserController {
                 .userId(user.getId())
                 .loginId(user.getLoginId())
                 .name(user.getName())
+                .isAdmin(user.getIsAdmin())
                 .build();
     }
 }

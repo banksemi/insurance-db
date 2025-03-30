@@ -11,11 +11,11 @@ var authTokenManager = (function() {
     loadTokens();
 
     return {
-        setTokens: function(tokens) {
-            accessToken = tokens.accessToken;
-            refreshToken = tokens.refreshToken;
-            expireAt = tokens.expireAt;
-            userId = tokens.userId;
+        setTokens: function(response) {
+            accessToken = response.accessToken;
+            refreshToken = response.refreshToken;
+            expireAt = response.expireAt;
+            userId = response.userId;
             if (userId != null) {
                 localStorage.setItem("userId", userId);
             }
@@ -37,6 +37,7 @@ var authTokenManager = (function() {
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("expireAt");
+            localStorage.removeItem("currentUser");
             location.href = "/login";
         },
         isTokenExpired: function() {

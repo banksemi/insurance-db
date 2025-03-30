@@ -11,4 +11,6 @@ public class UserResponse {
     private final Long userId;
     private final String loginId;
     private final String name;
+
+    private final Boolean isAdmin;
 }
