@@ -34,4 +34,6 @@ public class CaregiverResponse {
     private LocalDateTime createdAt;
 
     private Boolean isApproved;
+
+    private String status;
 }

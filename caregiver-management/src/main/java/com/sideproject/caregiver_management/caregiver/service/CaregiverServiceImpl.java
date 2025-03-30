@@ -23,6 +23,7 @@ public class CaregiverServiceImpl implements CaregiverService {
     private final Clock clock;
     private final CaregiverInsuranceAmountCalculator calculator;
     private final CaregiverRepository caregiverRepository;
+    private final CaregiverStatusService statusService;
 
     private CaregiverResponse toDto(Caregiver caregiver) {
         return CaregiverResponse.builder()
@@ -40,6 +41,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .effectiveDays(calculator.getEffectiveDays(caregiver).orElse(null))
                 .createdAt(caregiver.getCreatedAt())
                 .isApproved(caregiver.getIsApproved())
+                .status(statusService.getReadableStatus(caregiver))
                 .build();
     }
 
