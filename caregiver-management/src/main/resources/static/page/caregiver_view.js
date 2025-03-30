@@ -28,9 +28,8 @@ function updateURLParameter(url, param, paramVal){
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
-function changeOrder(select)
-{
-	location.href = updateURLParameter(document.URL,'order', select.value);
+function changeSortBy(select) {
+	location.href = updateURLParameter(document.URL,'sortBy', select.value);
 }
 
 function makeDOM(no, item) {
@@ -94,11 +93,10 @@ function makeDOM(no, item) {
 	return $domdata
 }
 
-function refreshTable(){
-	let sortBy = $(`input[name="order"]`).val();
+function reloadCaregivers(){
 	$.ajax({
 		type: "GET",
-		url: `/api/v1/users/${authTokenManager.getUserId()}/insurance/caregivers?sortBy=${sortBy}`,
+		url: `/api/v1/users/${authTokenManager.getUserId()}/insurance/caregivers?sortBy=${getSortBy()}`,
 		success: function(data){
 			ListData = [];
 			const $view = $("#view");
@@ -171,7 +169,7 @@ function Remove()
 				if (data.error == null)
 				{
 					alert("처리되었습니다.");
-					refreshTable();
+					reloadCaregivers();
 				}
 				else
 				{
@@ -207,7 +205,7 @@ function Termination()
 			if (data.error == null)
 			{
 				alert("처리되었습니다.");
-				refreshTable();
+				reloadCaregivers();
 			}
 			else
 			{
@@ -236,7 +234,7 @@ function Termination()
 			if (data.error == null)
 			{
 				alert("처리되었습니다.");
-				refreshTable();
+				reloadCaregivers();
 			}
 			else
 			{
@@ -380,12 +378,13 @@ function memo_update(first_no, no, text)
 	});
 }
 
+function getSortBy() {
+	let sortBy = getParameters("sortBy");
+	return sortBy ? sortBy : "id";
+}
 $(document).ready(function() {
-	let sortOrder = getParameters("order");
-	sortOrder = sortOrder ? sortOrder : "id";
-
-	$(`input[name="order"][value=${sortOrder}]`).prop("checked", true);
-	refreshTable();
+	$(`input[name="sortBy"][value=${getSortBy()}]`).prop("checked", true);
+	reloadCaregivers();
 }); 
 
 function search() {
