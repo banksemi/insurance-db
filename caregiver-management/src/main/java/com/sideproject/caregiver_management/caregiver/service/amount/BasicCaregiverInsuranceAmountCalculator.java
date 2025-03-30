@@ -2,7 +2,6 @@ package com.sideproject.caregiver_management.caregiver.service.amount;
 
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +18,15 @@ public class BasicCaregiverInsuranceAmountCalculator implements CaregiverInsuran
     public Long getContractDays(Caregiver caregiver) {
         Insurance insurance = caregiver.getInsurance();
         return ChronoUnit.DAYS.between(caregiver.getStartDate(), insurance.getEndDate());
+    }
+
+    @Override
+    public Optional<Long> getEffectiveDays(Caregiver caregiver) {
+        LocalDate endDate = caregiver.getEndDate();
+        if (endDate == null)
+            return Optional.empty();
+        else
+            return Optional.of(ChronoUnit.DAYS.between(caregiver.getStartDate(), caregiver.getEndDate()));
     }
 
     @Override
@@ -43,7 +51,13 @@ public class BasicCaregiverInsuranceAmountCalculator implements CaregiverInsuran
 
         // 사용하지 않은 날짜에 대해서는 환불액 측정
         // (반올림 처리되어있는) 청구된 보험료 기준으로 계산해야함
-        long unusedDays = ChronoUnit.DAYS.between(caregiver.getEndDate(), caregiver.getInsurance().getEndDate());
-        return Math.round((double) getInsuranceAmount(caregiver) * unusedDays / getContractDays(caregiver));
+        long insuranceAmount = getInsuranceAmount(caregiver);
+        long usedAmount = Math.round(
+                (double) insuranceAmount
+                        * getEffectiveDays(caregiver).get()
+                        / getContractDays(caregiver)
+        );
+
+        return insuranceAmount - usedAmount;
     }
 }

@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.caregiver.service;
 
-import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverDateUpdate;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.service.amount.BasicCaregiverInsuranceAmountCalculator;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -141,7 +141,6 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
         assertEquals(748, caregiver.getRefundAmount());
     }
 
-
     @Test
     @DisplayName("윤년이 있으면 366일로 보험료가 계산되어야함")
     void leapYear_calculatesInsuranceUsing366Days() {
@@ -161,5 +160,30 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
 
         assertEquals(83333, caregiver.getInsuranceAmount());
         assertEquals(74863, caregiver.getRefundAmount());
+    }
+
+    @Test
+    @DisplayName("보험 계약일 검사")
+    void insuranceDate() {
+        insurance.updateInsurance(InsuranceUpdateRequest.builder()
+                .startDate(LocalDate.of(2024, 6, 1))
+                .endDate(LocalDate.of(2025, 6, 1))
+                .personalInsuranceFee(100000L)
+                .build());
+
+        Caregiver caregiver = new Caregiver(insurance, false);
+        caregiver.setDate(CaregiverDateUpdate.ofStartDate(
+                LocalDate.of(2024, 6, 11)
+        ));
+        Long contractDays = calculator.getContractDays(caregiver);
+        Optional<Long> effectiveInsuranceDays = calculator.getEffectiveDays(caregiver);
+        caregiver.setDate(CaregiverDateUpdate.ofEndDate(
+                LocalDate.of(2024, 6, 21)
+        ));
+        Optional<Long>effectiveInsuranceDaysWithEndDate = calculator.getEffectiveDays(caregiver);
+
+        assertEquals(355, contractDays);
+        assertEquals(Optional.empty(), effectiveInsuranceDays);
+        assertEquals(Optional.of(10L), effectiveInsuranceDaysWithEndDate);
     }
 }

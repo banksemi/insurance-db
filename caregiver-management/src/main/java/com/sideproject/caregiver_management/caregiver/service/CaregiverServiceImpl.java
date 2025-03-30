@@ -37,6 +37,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .insuranceAmount(caregiver.getInsuranceAmount())
                 .refundAmount(caregiver.getRefundAmount())
                 .contractDays(calculator.getContractDays(caregiver))
+                .effectiveDays(calculator.getEffectiveDays(caregiver).orElse(null))
                 .createdAt(caregiver.getCreatedAt())
                 .isApproved(caregiver.getIsApproved())
                 .build();

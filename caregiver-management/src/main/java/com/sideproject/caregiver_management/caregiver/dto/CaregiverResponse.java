@@ -25,8 +25,10 @@ public class CaregiverResponse {
     private LocalDate endDate;
 
     private Long insuranceAmount;
-    private Long contractDays;
     private Long refundAmount;
+
+    private Long contractDays;
+    private Long effectiveDays;
 
     private String memo;
     private LocalDateTime createdAt;
