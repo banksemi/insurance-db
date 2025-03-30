@@ -27,7 +27,7 @@ public class CaregiverController {
         authorizationService.validateAccessToUser(userId);
         Insurance insurance = insuranceService.getInsuranceByUserId(userId);
         Long caregiverId = caregiverService.addCaregiver(insurance, request);
-        return CaregiverCreateResponse.builder().caregiverId(caregiverId).build();
+        return CaregiverCreateResponse.builder().id(caregiverId).build();
     }
 
     @GetMapping("")
@@ -37,5 +37,13 @@ public class CaregiverController {
         Insurance insurance = insuranceService.getInsuranceByUserId(userId);
 
         return caregiverService.getCaregivers(insurance, searchCondition);
+    }
+
+    @GetMapping("/estimate")
+    @Auth(Auth.Role.ROLE_USER)
+    public CaregiverEstimateResponse getEstimation(@PathVariable("userId") Long userId, @Valid CaregiverEstimateRequest request) {
+        authorizationService.validateAccessToUser(userId);
+        Insurance insurance = insuranceService.getInsuranceByUserId(userId);
+        return caregiverService.getCaregiverEstimate(insurance, request);
     }
 }

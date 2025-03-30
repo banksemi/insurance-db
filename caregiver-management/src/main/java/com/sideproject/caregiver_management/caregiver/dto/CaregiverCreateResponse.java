@@ -10,5 +10,5 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CaregiverCreateResponse {
-    private Long caregiverId;
+    private Long id;
 }
