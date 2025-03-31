@@ -3,6 +3,7 @@ package com.sideproject.caregiver_management.caregiver.service;
 import com.sideproject.caregiver_management.caregiver.dto.*;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverDuplicateException;
+import com.sideproject.caregiver_management.caregiver.exception.CaregiverForbiddenException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateBeforeNowException;
 import com.sideproject.caregiver_management.caregiver.exception.NotFoundCaregiverException;
 import com.sideproject.caregiver_management.caregiver.repository.CaregiverRepository;
@@ -45,7 +46,16 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .build();
     }
 
+    private Caregiver getCaregiverEntity(Long caregiverId) throws NotFoundCaregiverException {
+        Caregiver caregiver = caregiverRepository.findById(caregiverId);
+        if (caregiver == null) {
+            throw new NotFoundCaregiverException();
+        }
+        return caregiver;
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public ListResponse<CaregiverResponse> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
         if (searchCondition.getSortBy() == CaregiverSortType.MEMO) {
             throw new UnsupportedOperationException("Not yet implemented");
@@ -62,12 +72,14 @@ public class CaregiverServiceImpl implements CaregiverService {
     }
 
     @Override
-    public Caregiver getCaregiver(Long caregiverId) throws NotFoundCaregiverException {
-        Caregiver caregiver = caregiverRepository.findById(caregiverId);
-        if (caregiver == null) {
-            throw new NotFoundCaregiverException();
-        }
-        return caregiver;
+    @Transactional(readOnly = true)
+    public CaregiverResponse getCaregiver(Insurance insurance, Long caregiverId) throws NotFoundCaregiverException {
+        Caregiver caregiver = getCaregiverEntity(caregiverId);
+
+        if (!caregiver.getInsurance().equals(insurance))
+            throw new CaregiverForbiddenException();
+
+        return toDto(caregiver);
     }
 
     @Override
@@ -97,14 +109,20 @@ public class CaregiverServiceImpl implements CaregiverService {
 
     @Override
     public void requestEndDate(Long caregiverId, LocalDate endDate) {
-        Caregiver caregiver = getCaregiver(caregiverId);  // throw NotFoundCaregiverException
+        Caregiver caregiver = getCaregiverEntity(caregiverId);  // throw NotFoundCaregiverException
         caregiver.setDate(CaregiverDateUpdate.ofEndDate(endDate));
         caregiver.calculateAmounts(calculator);
     }
 
     @Override
-    public void updateMemo(Long caregiverId, String memo) {
+    @Transactional
+    public void updateMemo(Insurance insurance, Long caregiverId, String memo) {
+        Caregiver caregiver = getCaregiverEntity(caregiverId); // NotFoundCaregiverException
 
+        if (!caregiver.getInsurance().equals(insurance))
+            throw new CaregiverForbiddenException();
+
+        caregiver.setMemo(memo);
     }
 
     @Override

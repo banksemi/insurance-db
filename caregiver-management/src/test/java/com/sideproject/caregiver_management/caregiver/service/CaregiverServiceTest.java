@@ -5,6 +5,7 @@ import com.sideproject.caregiver_management.caregiver.dto.CaregiverResponse;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverSearchCondition;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverSortType;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
+import com.sideproject.caregiver_management.caregiver.exception.CaregiverForbiddenException;
 import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
@@ -50,7 +51,7 @@ class CaregiverServiceTest {
         Mockito.when(clock.instant()).thenReturn(fixedClock.instant());
         Mockito.when(clock.getZone()).thenReturn(fixedClock.getZone());
 
-        Long tenantId = tenantService.createTenant("Tenent");
+        Long tenantId = tenantService.createTenant("Tenant");
         Long userId = tenantService.createUser(tenantId,
                 UserCreateRequest.builder()
                         .loginId("loginId")
@@ -189,5 +190,35 @@ class CaregiverServiceTest {
         // then
         assertEquals(4, sortedCaregivers.getCount());
         assertEquals(List.of(id1, id3, id2, id4), sortedCaregivers.getData().stream().map(CaregiverResponse::getId).toList());
+    }
+
+    @Test
+    @DisplayName("간병인 메모 수정이 정상적으로 완료되어야함")
+    void updateMemoSuccess() {
+        // given
+        Insurance insurance = createInsurance();
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
+
+        // when
+        caregiverService.updateMemo(insurance, id1, "memo");
+
+        // then
+        CaregiverResponse caregiverResponse = caregiverService.getCaregiver(insurance, id1);
+        assertEquals("memo", caregiverResponse.getMemo());
+    }
+
+    @Test
+    @DisplayName("다른 보험에 속한 간병인 메모 수정은 CaregiverForbiddenException 가 반환되어야함")
+    void updateMemoFailBecauseNotBelongToInsurance() {
+        // given
+        Insurance insurance = createInsurance();
+        Insurance dummyInsurance = new Insurance(null);
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
+
+        // when, then
+        assertThrows(
+                CaregiverForbiddenException.class,
+                ()->caregiverService.updateMemo(dummyInsurance, id1, "memo")
+        );
     }
 }

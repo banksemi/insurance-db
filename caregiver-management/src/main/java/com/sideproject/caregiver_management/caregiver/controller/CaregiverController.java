@@ -46,4 +46,16 @@ public class CaregiverController {
         Insurance insurance = insuranceService.getInsuranceByUserId(userId);
         return caregiverService.getCaregiverEstimate(insurance, request);
     }
+
+    @PatchMapping("/{caregiverId}/memo")
+    @Auth(Auth.Role.ROLE_USER)
+    public CaregiverResponse updateMemo(
+            @PathVariable("userId") Long userId,
+            @PathVariable("caregiverId") Long caregiverId,
+            @RequestBody @Valid CaregiverUpdateMemoRequest request) {
+        authorizationService.validateAccessToUser(userId);
+        Insurance insurance = insuranceService.getInsuranceByUserId(userId);
+        caregiverService.updateMemo(insurance, caregiverId, request.getText());
+        return caregiverService.getCaregiver(insurance, caregiverId);
+    }
 }

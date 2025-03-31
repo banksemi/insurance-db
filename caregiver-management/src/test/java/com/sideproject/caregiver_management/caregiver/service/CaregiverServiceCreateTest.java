@@ -1,6 +1,7 @@
 package com.sideproject.caregiver_management.caregiver.service;
 
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverCreateRequest;
+import com.sideproject.caregiver_management.caregiver.dto.CaregiverResponse;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverDuplicateException;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateBeforeNowException;
@@ -209,7 +210,7 @@ public class CaregiverServiceCreateTest {
                 insurance, createRequest(LocalDate.of(2025, 5, 1)));
         assertNotNull(caregiverId);
 
-        Caregiver caregiver = caregiverService.getCaregiver(caregiverId);
+        CaregiverResponse caregiver = caregiverService.getCaregiver(insurance, caregiverId);
         assertEquals(caregiver.getInsuranceAmount(), 85);
         assertNull(caregiver.getRefundAmount());
     }

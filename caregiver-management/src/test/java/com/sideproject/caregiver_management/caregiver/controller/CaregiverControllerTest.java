@@ -102,4 +102,24 @@ class CaregiverControllerTest {
         verify(caregiverService).getCaregiverEstimate(insurance, request); // 서비스를 호출하여 결과를 얻는지 검증
         assertEquals(100L, response.getInsuranceAmount()); // 결과 확인
     }
+
+    @Test
+    @DisplayName("간병인 메모 수정 컨트롤러 검증")
+    void updateMemoSuccess() {
+        // given
+        CaregiverUpdateMemoRequest request = new CaregiverUpdateMemoRequest("memo");
+        when(caregiverService.getCaregiver(insurance, 12L)).thenReturn(
+                CaregiverResponse.builder()
+                        .id(12L)
+                        .build()
+        );
+
+        // when
+        CaregiverResponse response = caregiverController.updateMemo(userId, 12L, request);
+
+        // then
+        verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
+        verify(caregiverService).updateMemo(insurance, 12L, "memo"); // 서비스를 호출하여 결과를 얻는지 검증
+        assertEquals(12L, response.getId()); // 결과 확인
+    }
 }
