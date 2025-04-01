@@ -27,11 +27,10 @@ A:hover {
 }
 
 body {
-    margin: 0px;
-    padding: 0px;
-    /* �۲� ���� */
+    margin: 0;
+    padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.6em;
     text-align: left;
     background: #e1e1e1;
@@ -137,7 +136,6 @@ section#content {
 
 section#content input {
     font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 300;
     font-size: 16px;
     padding: 0 5px 0 5px;
 }
@@ -290,11 +288,27 @@ section#content input {
 
 table.style1 {
     border-collapse: collapse;
-    word-break: break-all;
     border-spacing: 0;
     width: 100%;
     border-top: 2px solid #818181;
     font-size: 14px;
+}
+
+table.style1 input.memo_edit {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px !important;
+    border: 1px solid #111111;
+}
+table.style1 input.memo_edit:focus {
+    outline: none;
+}
+
+table.style1 input.memo_edit[readonly] {
+    background-color: #f5f5f5; /* 읽기 전용일 때의 배경색 */
+    color: #666666; /* 텍스트 색상 */
+    border: 1px solid #cccccc; /* 테두리 색상 */
+    cursor: not-allowed; /* 읽기 전용 상태일 때 마우스 커서 */
 }
 
 table.no_top_border {

@@ -53,6 +53,8 @@ function makeDOM(no, item) {
 	$domdata
 		.attr("data-value", item.id)
 		.attr("title", `${item.createdAt}에 등록된 데이터입니다.`);
+	$domdata.data("item", item);
+	$domdata.data("no", no);  // 메모를 수정할 때 no 값을 재사용해야함
 
 	// 상태별로 클래스 추가
 	if (item.isApproved == false) {
@@ -90,7 +92,7 @@ function makeDOM(no, item) {
 		.text(numberWithCommas(item.insuranceAmount - item.refundAmount));
 
 	$domdata.find("td.item_memo")
-		.attr("onclick", `memo_click(this, ${item.id})`)
+		.attr("onclick", `createMemoEditInput(this, ${item.id})`)
 		.css("width", "200px")
 		.text(item.memo);
 	return $domdata
@@ -254,132 +256,53 @@ function Termination()
 	}
 }
 
-function memo_click(box,first_no)
-{
-	if ($(box).find("input").length == 0)
-	{	
-		inputbox = $("<input style=\"width:100%;\" type='text'></input>");
-		inputbox.val($(box).text());
-		$(box).empty();
-		// 새로운 박스 생성
-		$(box).append("<input style=\"display: none\" type='text' value="+first_no+"></input>");
-		$(box).append(inputbox);
-		inputbox.focus();
-		inputbox.keydown(function (key) {
-			if (key.keyCode == 9) { 
-				next_td = $(this).closest('tr').next('tr').find("td:eq(9)");
-				console.log(next_td);
-				next_td.click();
+function createMemoEditInput(box, caregiverId) {
+	if ($(box).find("input").length === 0) {
+		const inputBox = $("<input class='memo_edit' type='text' />");
+		let originalText = $(box).text();
+		inputBox.val(originalText);
+		$(box).empty().append(inputBox);
+		inputBox.focus();
+		inputBox.keydown(function (e) {
+			if (e.keyCode === 9) { // tab
+				e.preventDefault();
+
+				let tr;
+				if (e.shiftKey) {
+					tr = $(this).closest('tr').prev('tr');
+					$(this).closest('tr').prev('tr').find("td:eq(9)").click();
+				} else {
+					tr = $(this).closest('tr').next('tr');
+				}
+				tr.find("td:eq(9)").click();
 		    }
-			if(key.keyCode == 13){//키가 13이면 실행 (엔터는 13)
-				inputbox.blur();
+			if (e.keyCode === 13) { // enter
+				inputBox.blur();
 			}
-	 
 		});
-		inputbox.blur(function() { 
-			message=this.value;
-			this.value = "변경 내용 처리중...";
+
+		inputBox.blur(function() {
+			inputBox.prop('readonly', true);
 			$.ajax({
-			type: "POST",
-			data: {
-				type: "MemoUpdate",
-				first_no: $(this).siblings().val(),
-				text: message  
-			},
-			url:'/function/ListUpdatev2.php',
-			success:function(data){
-				if (data.error == null)
-				{
-					//page_load();
-					memo_update(data.first_no,data.no,data.text);
+				type: "PATCH",
+				data: JSON.stringify({
+					text: this.value
+				}),
+				url: `/api/v1/users/${authTokenManager.getUserId()}/insurance/caregivers/${caregiverId}/memo`,
+				success: function(response) {
+					const $element = $(`[data-value="${response.id}"]`);
+					let newDOM = makeDOM($element.data('no'), response);
+					$element.replaceWith(newDOM);
+				},
+				error:function(jqXHR, textStatus, errorThrown){
+					SemiPopup("메모를 수정하는 중 오류가 발생했습니다.")
+					$(box).text(originalText);
 				}
-				else
-				{
-					SemiPopup(data.error);
-				}
-			},
-			error:function(jqXHR, textStatus, errorThrown){
-				
-				$("#view").text("Not Working");
-				closePopup();
-			}
+			});
 		});
-
-
-		});
-		
-		}
+	}
 }
 
-function memo_update(first_no, no, text)
-{
-	$.ajax({
-		type: "POST",
-		data: {
-			item_no:no,
-			return_value:first_no
-		},
-		url:'/function/listview.php',
-		success:function(data){
-			var view = $("#view");
-			if (data.errer == null)
-			{
-				var item = data.list[0];
-				ListData.push(item);
-				var temp_text = "";
-				var domdata = $("<tr first_no="+item.first_no+" data-value="+item.hide_no+" title=\"" + item.log_time + "에 등록된 데이터입니다.\" class=\"hoverok\"></tr>");
-				if (item.ok == 0) domdata.addClass("new");
-				else if (item.state.match("삭제됨")) domdata.addClass("delete");
-				else if (item.state.match("퇴사")) domdata.addClass("end");
-
-				if ($(".admin_input").length > 0) {
-					temp_text += ("<td class=\"date_button_width\"><a onclick=\"openPopup(" + item.hide_no + ",'" + item.name + "')\" class=\"button_style1\">강제 수정</a></td>");
-				}
-				else {
-					var td_with_item_no = $("#view > tr[first_no=" + data.return_value +"] > td.item_no");
-					console.log(td_with_item_no);
-					temp_text += ("<td class='item_no'>" + td_with_item_no.text() + "</td>"); // 기존과 같은 번호 사용
-				}
-
-				temp_text += ("<td>" + item.state + "</td>");
-				temp_text += ("<td class='item_name'>" + item.name + "</td>");
-				temp_text += ("<td>" + item.birth + "</td>");
-
-				temp_text += ("<td class=\"date_button_width\">" + item.start + " (" + item.contract_day + "일)</td>");
-				if (item.end != undefined)
-				{
-				temp_text += ("<td class=\"date_button_width\">" + item.end + " (" + item.real_day + "일)</td>");
-				}
-				else
-				{
-				temp_text += ("<td class=\"date_button_width\"><a onclick=\"openPopup(" + item.hide_no + ",'" + item.name + "')\" class=\"button_style1\">해지 신청</a></td>");
-				}
-				temp_text += ("<td>" + item.pay + "</td>");
-
-
-
-				if (item.return_pay != undefined)
-				{
-				temp_text += ("<td>" + item.return_pay + "</td>");
-				}
-				else
-				{
-				temp_text += ("<td></td>");
-				}
-				temp_text += ("<td>" + item.total_pay + "</td>");
-
-				temp_text += ("<td onclick=\"memo_click(this," + item.first_no + ")\" style=\"width:200px\" class='item_memo'>" + item.memo + "</td>");
-
-				domdata.append(temp_text);
-				// 이 데이터를 기존 데이터와 교체
-
-				v = $("#view > tr[first_no=" + data.return_value +"]");
-				v.html(domdata.html());
-				v[0].setAttribute('data-value', item.hide_no);
-			}
-		}
-	});
-}
 
 function getSortBy() {
 	let sortBy = getParameters("sortBy");
