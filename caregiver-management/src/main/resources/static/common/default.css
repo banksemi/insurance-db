@@ -299,6 +299,7 @@ table.style1 input.memo_edit {
     box-sizing: border-box;
     font-size: 14px !important;
     border: 1px solid #111111;
+    text-align: center;
 }
 table.style1 input.memo_edit:focus {
     outline: none;

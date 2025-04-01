@@ -260,9 +260,24 @@ function createMemoEditInput(box, caregiverId) {
 	if ($(box).find("input").length === 0) {
 		const inputBox = $("<input class='memo_edit' type='text' />");
 		let originalText = $(box).text();
+
+		// 현재 선택 범위 저장
+		const selection = window.getSelection();
+		let start = 0, end = 0;
+		if (selection.rangeCount > 0) {
+			const range = selection.getRangeAt(0);
+			const preCaretRange = range.cloneRange();
+			preCaretRange.selectNodeContents(box);
+			preCaretRange.setEnd(range.startContainer, range.startOffset);
+			start = preCaretRange.toString().length;
+			end = start + range.toString().length;
+		}
+
 		inputBox.val(originalText);
 		$(box).empty().append(inputBox);
 		inputBox.focus();
+		inputBox[0].setSelectionRange(start, end);
+
 		inputBox.keydown(function (e) {
 			if (e.keyCode === 9) { // tab
 				e.preventDefault();
