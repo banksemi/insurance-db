@@ -221,4 +221,16 @@ class CaregiverServiceTest {
                 ()->caregiverService.updateMemo(dummyInsurance, id1, "memo")
         );
     }
+
+    @Test
+    @DisplayName("간병인의 만료일을 지정하기 위해서는 기존 등록 데이터에 대한 승인을 받은 상태여야함.")
+    void requestEndDateWithNotApproved() {
+        Insurance insurance = createInsurance();
+        Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
+
+        assertThrows(
+                CaregiverForbiddenException.class,
+                ()->caregiverService.requestEndDate(id1, LocalDate.of(2024, 9, 1), true)
+        );
+    }
 }
