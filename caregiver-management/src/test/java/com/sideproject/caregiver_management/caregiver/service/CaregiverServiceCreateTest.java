@@ -127,7 +127,7 @@ public class CaregiverServiceCreateTest {
                 .isShared(false)
                 .build();
         Long caregiverId = caregiverService.addCaregiver(insurance, request);
-        caregiverService.requestEndDate(caregiverId, LocalDate.of(2024, 10, 1), false);
+        caregiverService.requestEndDate(insurance, caregiverId, LocalDate.of(2024, 10, 1), false);
 
         request.setStartDate(LocalDate.of(2024, 9, 9));
         assertThrows(CaregiverDuplicateException.class, ()->caregiverService.addCaregiver(insurance, request));
@@ -147,7 +147,7 @@ public class CaregiverServiceCreateTest {
                 .isShared(false)
                 .build();
         Long caregiverId = caregiverService.addCaregiver(insurance, request);
-        caregiverService.requestEndDate(caregiverId, LocalDate.of(2024, 10, 1), false);
+        caregiverService.requestEndDate(insurance, caregiverId, LocalDate.of(2024, 10, 1), false);
 
         request.setStartDate(LocalDate.of(2024, 10, 1));
         caregiverService.addCaregiver(insurance, request);

@@ -106,10 +106,12 @@ public class CaregiverServiceImpl implements CaregiverService {
         return caregiver.getId();
     }
 
-
     @Override
-    public void requestEndDate(Long caregiverId, LocalDate endDate, Boolean checkApproved) throws CaregiverForbiddenException {
+    public void requestEndDate(Insurance insurance, Long caregiverId, LocalDate endDate, Boolean checkApproved) throws CaregiverForbiddenException {
         Caregiver caregiver = getCaregiverEntity(caregiverId);  // throw NotFoundCaregiverException
+
+        if (!caregiver.getInsurance().equals(insurance))
+            throw new CaregiverForbiddenException();
 
         // 보험 종료일을 지정하기 위해서는 승인(확인)이 완료된 항목에 대해서만 요청할 수 있음.
         if (checkApproved && !caregiver.getIsApproved())

@@ -230,7 +230,7 @@ class CaregiverServiceTest {
 
         assertThrows(
                 CaregiverForbiddenException.class,
-                ()->caregiverService.requestEndDate(id1, LocalDate.of(2024, 9, 1), true)
+                ()->caregiverService.requestEndDate(insurance, id1, LocalDate.of(2024, 9, 1), true)
         );
     }
 }

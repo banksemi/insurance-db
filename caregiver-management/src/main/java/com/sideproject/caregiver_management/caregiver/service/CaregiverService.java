@@ -14,7 +14,7 @@ public interface CaregiverService {
     ListResponse<CaregiverResponse> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition);
     CaregiverResponse getCaregiver(Insurance insurance, Long caregiverId) throws NotFoundCaregiverException, CaregiverForbiddenException;
     Long addCaregiver(Insurance insurance, CaregiverCreateRequest request);
-    void requestEndDate(Long caregiverId, LocalDate endDate, Boolean checkApproved) throws NotFoundCaregiverException, CaregiverForbiddenException;
+    void requestEndDate(Insurance insurance, Long caregiverId, LocalDate endDate, Boolean checkApproved) throws NotFoundCaregiverException, CaregiverForbiddenException;
     void updateMemo(Insurance insurance, Long caregiverId, String memo) throws NotFoundCaregiverException, CaregiverForbiddenException;
 
     CaregiverEstimateResponse getCaregiverEstimate(Insurance insurance, CaregiverEstimateRequest request);

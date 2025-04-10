@@ -58,4 +58,17 @@ public class CaregiverController {
         caregiverService.updateMemo(insurance, caregiverId, request.getText());
         return caregiverService.getCaregiver(insurance, caregiverId);
     }
+
+
+    @PatchMapping("/{caregiverId}/end-date")
+    @Auth(Auth.Role.ROLE_USER)
+    public CaregiverResponse updateEndDate(
+            @PathVariable("userId") Long userId,
+            @PathVariable("caregiverId") Long caregiverId,
+            @RequestBody @Valid CaregiverUpdateEndDateRequest request) {
+        authorizationService.validateAccessToUser(userId);
+        Insurance insurance = insuranceService.getInsuranceByUserId(userId);
+        caregiverService.requestEndDate(insurance, caregiverId, request.getEndDate(), true);
+        return caregiverService.getCaregiver(insurance, caregiverId);
+    }
 }
