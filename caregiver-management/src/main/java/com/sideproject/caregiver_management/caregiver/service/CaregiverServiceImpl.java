@@ -2,10 +2,7 @@ package com.sideproject.caregiver_management.caregiver.service;
 
 import com.sideproject.caregiver_management.caregiver.dto.*;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
-import com.sideproject.caregiver_management.caregiver.exception.CaregiverDuplicateException;
-import com.sideproject.caregiver_management.caregiver.exception.CaregiverForbiddenException;
-import com.sideproject.caregiver_management.caregiver.exception.CaregiverStartDateBeforeNowException;
-import com.sideproject.caregiver_management.caregiver.exception.NotFoundCaregiverException;
+import com.sideproject.caregiver_management.caregiver.exception.*;
 import com.sideproject.caregiver_management.caregiver.repository.CaregiverRepository;
 import com.sideproject.caregiver_management.caregiver.service.amount.CaregiverInsuranceAmountCalculator;
 import com.sideproject.caregiver_management.common.dto.ListResponse;
@@ -107,7 +104,7 @@ public class CaregiverServiceImpl implements CaregiverService {
     }
 
     @Override
-    public void requestEndDate(Insurance insurance, Long caregiverId, LocalDate endDate, Boolean checkApproved) throws CaregiverForbiddenException {
+    public void requestEndDate(Insurance insurance, Long caregiverId, LocalDate endDate, Boolean checkApproved) throws CaregiverForbiddenException, CaregiverNotApprovedException {
         Caregiver caregiver = getCaregiverEntity(caregiverId);  // throw NotFoundCaregiverException
 
         if (!caregiver.getInsurance().equals(insurance))
@@ -115,7 +112,7 @@ public class CaregiverServiceImpl implements CaregiverService {
 
         // 보험 종료일을 지정하기 위해서는 승인(확인)이 완료된 항목에 대해서만 요청할 수 있음.
         if (checkApproved && !caregiver.getIsApproved())
-            throw new CaregiverForbiddenException();
+            throw new CaregiverNotApprovedException();
 
         caregiver.setDate(CaregiverDateUpdate.ofEndDate(endDate));
         caregiver.calculateAmounts(calculator);
@@ -149,4 +146,5 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .insuranceAmount(calculator.getInsuranceAmount(dummyCaregiver))
                 .build();
     }
+
 }

@@ -6,6 +6,7 @@ import com.sideproject.caregiver_management.caregiver.dto.CaregiverSearchConditi
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverSortType;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.exception.CaregiverForbiddenException;
+import com.sideproject.caregiver_management.caregiver.exception.CaregiverNotApprovedException;
 import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
@@ -229,7 +230,7 @@ class CaregiverServiceTest {
         Long id1 = createCaregiver(insurance, "이름1", LocalDate.of(2024, 9, 1), true);
 
         assertThrows(
-                CaregiverForbiddenException.class,
+                CaregiverNotApprovedException.class,
                 ()->caregiverService.requestEndDate(insurance, id1, LocalDate.of(2024, 9, 1), true)
         );
     }
