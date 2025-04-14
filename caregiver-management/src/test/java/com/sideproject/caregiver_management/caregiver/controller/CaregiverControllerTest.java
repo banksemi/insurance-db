@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -120,6 +121,28 @@ class CaregiverControllerTest {
         // then
         verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
         verify(caregiverService).updateMemo(insurance, 12L, "memo"); // 서비스를 호출하여 결과를 얻는지 검증
+        assertEquals(12L, response.getId()); // 결과 확인
+    }
+
+    @Test
+    @DisplayName("간병인 보험 해지 컨트롤러 검증")
+    void updateEndDateSuccess() {
+        // given
+        CaregiverUpdateEndDateRequest request = new CaregiverUpdateEndDateRequest(LocalDate.of(2011,1,1));
+        when(caregiverService.getCaregiver(insurance, 12L)).thenReturn(
+                CaregiverResponse.builder()
+                        .id(12L)
+                        .build()
+        );
+
+        // when
+        CaregiverResponse response = caregiverController.updateEndDate(userId, 12L, request);
+
+        // then
+        verify(authorizationService).validateAccessToUser(userId);
+
+        // checkApproved 변수를 true로 전달해야함
+        verify(caregiverService).requestEndDate(insurance, 12L, request.getEndDate(), true);
         assertEquals(12L, response.getId()); // 결과 확인
     }
 }
