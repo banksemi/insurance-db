@@ -54,9 +54,6 @@ public class CaregiverServiceImpl implements CaregiverService {
     @Override
     @Transactional(readOnly = true)
     public ListResponse<CaregiverResponse> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
-        if (searchCondition.getSortBy() == CaregiverSortType.MEMO) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
         List<Caregiver> caregivers = caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition);
 
         List<CaregiverResponse> dtoList = caregivers.stream().map(this::toDto).toList(); // 자바 16 이상
