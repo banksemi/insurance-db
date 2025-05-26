@@ -124,36 +124,40 @@ function reloadCaregivers(){
 	});
 }
 
-function openPopup(no, name)
-{
+function openPopup(no, name) {
 	var now_item = null;
 	for (element_idx in ListData) {
-		if (ListData[element_idx].hide_no == no)
-		{
+		if (ListData[element_idx].id == no) {
 			now_item = ListData[element_idx];
 			break;
 		}
 	}
+
+	if (!now_item) {
+		console.error("해당 ID의 항목을 찾을 수 없습니다:", no);
+		return;
+	}
+
 	SetCenter($('.dialog'));
 	$("form").find("input[name=date]").val(yyyymmdd(new Date()));
 	$("input[name=no]").val(no);
-	if ($(".admin_input").length > 0)
-	{// 관리자
 
+
+	if (userManager.getCurrentUser().isAdmin) {
 		$("input[name=name]").val(now_item.name);
-		var temp = now_item.birth.replace(/[^0-9]/g,'');
+
+		var temp = now_item.birthday ? now_item.birthday.replace(/[^0-9]/g,'') : '';
 		$("input[name=birth]").val(temp);
-		$("input[name=start]").val(now_item.start);
-		$("input[name=type]").val(now_item.type);
-		$("input[name=date]").val(now_item.end);
-	}
-	else
-	{
+
+		$("input[name=start]").val(now_item.startDate);
+		$("input[name=type]").val(now_item.type || '');
+		$("input[name=date]").val(now_item.endDate || '');
+	} else {
 		$("#id").text(name);
 	}
 	$(".popup_area").show();
-	
 }
+
 function closePopup()
 {
 	$(".popup_area").hide();
