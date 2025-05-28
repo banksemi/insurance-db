@@ -13,14 +13,14 @@
 
 
     <div class="content_sub_area">
-        <a href=""><div class="sub sub_on">전체</div></a>
-        <a href=""><div class="sub">개인 간병</div></a>
-        <a href=""><div class="sub">공동 간병</div></a>
+        <div class="sub sub_on" onclick="updateURL('isShared', '')">전체</div>
+        <div class="sub" onclick="updateURL('isShared', 'false')">개인 간병</div>
+        <div class="sub" onclick="updateURL('isShared', 'true')">공동 간병</div>
         <div class="option">
             Sort
-            <label><input type="radio" name="sortBy" onclick="changeSortBy(this)" value="id">기본 (입력순)</label>
-            <label><input type="radio" name="sortBy" onclick="changeSortBy(this)" value="name">이름순</label>
-            <label><input type="radio" name="sortBy" onclick="changeSortBy(this)" value="memo">메모순</label>
+            <label><input type="radio" name="sortBy" onclick="updateURL('sortBy', this.value)" value="id">기본 (입력순)</label>
+            <label><input type="radio" name="sortBy" onclick="updateURL('sortBy', this.value)" value="name">이름순</label>
+            <label><input type="radio" name="sortBy" onclick="updateURL('sortBy', this.value)" value="memo">메모순</label>
         </div>
     </div>
     <div class="sub_main_area">
@@ -92,7 +92,7 @@
                 <? if ($_SESSION['admin'] == true) { ?>
                 <a onclick="Remove()" class="button_style1">완전 삭제</a>
                 <? } ?>
-                <a onclick="Termination()" class="button_style1">제출</a>
+                <a onclick="submitCaregiver()" class="button_style1">제출</a>
             </div>
         </div>
     </div>

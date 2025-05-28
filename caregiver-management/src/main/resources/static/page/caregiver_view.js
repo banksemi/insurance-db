@@ -28,8 +28,8 @@ function updateURLParameter(url, param, paramVal){
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
-function changeSortBy(select) {
-	location.href = updateURLParameter(document.URL,'sortBy', select.value);
+function updateURL(key, value) {
+	location.href = updateURLParameter(document.URL,key, value);
 }
 
 function makeDOM(no, item) {
@@ -193,10 +193,9 @@ function Remove()
 		});
 	}
 }
-function Termination()
-{
-	// 관리자 체크는 서버단에서 한번더 확인
-	if ($(".admin_input").length > 0)
+function submitCaregiver() {
+	let caregiverId = parseInt($("input[name=no]").val());
+	if (userManager.getCurrentUser().isAdmin)
 	{
 		$.ajax({
 		type: "POST",
@@ -228,17 +227,13 @@ function Termination()
 			closePopup();
 		}
 	});
-	}
-	else
-	{
+	} else {
 		$.ajax({
-		type: "POST",
-		data: {
-			type: "End",
-			no: $("input[name=no]").val(),
-			end: $("input[name=date]").val()
-		},
-		url:'/function/List_Update.php',
+		type: "PATCH",
+		data: JSON.stringify({
+			endDate: $("input[name=date]").val()
+		}),
+		url:`/api/v1/users/${authTokenManager.getUserId()}/insurance/caregivers/${caregiverId}/end-date`,
 		success:function(data){
 			if (data.error == null)
 			{
@@ -252,9 +247,9 @@ function Termination()
 			closePopup();
 		},
 		error:function(jqXHR, textStatus, errorThrown){
-			
-			$("#view").text("Not Working");
-			closePopup();
+			data = jqXHR.responseJSON;
+			SemiPopup(data.errors[0].message);
+			// closePopup();
 		}
 	});
 	}
