@@ -3,6 +3,8 @@ package com.sideproject.caregiver_management.caregiver.service;
 import com.sideproject.caregiver_management.caregiver.dto.CaregiverDateUpdate;
 import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.service.amount.BasicCaregiverInsuranceAmountCalculator;
+import com.sideproject.caregiver_management.caregiver.service.contract_period_calculator.CaregiverContractPeriodCalculator;
+import com.sideproject.caregiver_management.caregiver.service.contract_period_calculator.DefaultCaregiverContractPeriodCalculatorImpl;
 import com.sideproject.caregiver_management.insurance.dto.InsuranceUpdateRequest;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import com.sideproject.caregiver_management.user.entity.User;
@@ -16,7 +18,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BasicCaregiverInsuranceAmountCalculatorTest {
-    BasicCaregiverInsuranceAmountCalculator calculator = new BasicCaregiverInsuranceAmountCalculator();
+    CaregiverContractPeriodCalculator contractPeriodCalculator = new DefaultCaregiverContractPeriodCalculatorImpl();
+    BasicCaregiverInsuranceAmountCalculator calculator = new BasicCaregiverInsuranceAmountCalculator(contractPeriodCalculator);
     Insurance insurance;
     @BeforeEach
     void setUp() {
@@ -175,12 +178,12 @@ class BasicCaregiverInsuranceAmountCalculatorTest {
         caregiver.setDate(CaregiverDateUpdate.ofStartDate(
                 LocalDate.of(2024, 6, 11)
         ));
-        Long contractDays = calculator.getContractDays(caregiver);
-        Optional<Long> effectiveInsuranceDays = calculator.getEffectiveDays(caregiver);
+        Long contractDays = contractPeriodCalculator.getContractDays(caregiver);
+        Optional<Long> effectiveInsuranceDays = contractPeriodCalculator.getEffectiveDays(caregiver);
         caregiver.setDate(CaregiverDateUpdate.ofEndDate(
                 LocalDate.of(2024, 6, 21)
         ));
-        Optional<Long>effectiveInsuranceDaysWithEndDate = calculator.getEffectiveDays(caregiver);
+        Optional<Long>effectiveInsuranceDaysWithEndDate = contractPeriodCalculator.getEffectiveDays(caregiver);
 
         assertEquals(355, contractDays);
         assertEquals(Optional.empty(), effectiveInsuranceDays);

@@ -5,6 +5,7 @@ import com.sideproject.caregiver_management.caregiver.entity.Caregiver;
 import com.sideproject.caregiver_management.caregiver.exception.*;
 import com.sideproject.caregiver_management.caregiver.repository.CaregiverRepository;
 import com.sideproject.caregiver_management.caregiver.service.amount.CaregiverInsuranceAmountCalculator;
+import com.sideproject.caregiver_management.caregiver.service.contract_period_calculator.CaregiverContractPeriodCalculator;
 import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 public class CaregiverServiceImpl implements CaregiverService {
     private final Clock clock;
     private final CaregiverInsuranceAmountCalculator calculator;
+    private final CaregiverContractPeriodCalculator contractPeriodCalculator;
     private final CaregiverRepository caregiverRepository;
     private final CaregiverStatusService statusService;
 
@@ -35,8 +37,8 @@ public class CaregiverServiceImpl implements CaregiverService {
                 .memo(caregiver.getMemo())
                 .insuranceAmount(caregiver.getInsuranceAmount())
                 .refundAmount(caregiver.getRefundAmount())
-                .contractDays(calculator.getContractDays(caregiver))
-                .effectiveDays(calculator.getEffectiveDays(caregiver).orElse(null))
+                .contractDays(contractPeriodCalculator.getContractDays(caregiver))
+                .effectiveDays(contractPeriodCalculator.getEffectiveDays(caregiver).orElse(null))
                 .createdAt(caregiver.getCreatedAt())
                 .isApproved(caregiver.getIsApproved())
                 .status(statusService.getReadableStatus(caregiver))
@@ -137,11 +139,11 @@ public class CaregiverServiceImpl implements CaregiverService {
 
         dummyCaregiver.setDate(CaregiverDateUpdate.ofStartDate(request.getStartDate()));
 
+        Long contractDays = contractPeriodCalculator.getContractDays(dummyCaregiver);
         return CaregiverEstimateResponse.builder()
-                .contractDays(calculator.getContractDays(dummyCaregiver))
+                .contractDays(contractDays)
                 .endDate(insurance.getEndDate()) // 해지일 미지정 상태이므로 보험의 만기일을 사용
                 .insuranceAmount(calculator.getInsuranceAmount(dummyCaregiver))
                 .build();
     }
-
 }
