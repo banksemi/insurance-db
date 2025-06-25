@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,15 @@ public class CommonExceptionHandler {
             fieldErrors.add(errorDetails);
         });
         return buildErrorResponse(HttpStatus.BAD_REQUEST, fieldErrors);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<APIExceptionResponse> handleDateTimeParseException(DateTimeParseException ex) {
+        List<Map<String, Object>> errors = new ArrayList<>();
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("message", "날짜 및 시간 형식이 올바르지 않습니다. 입력 데이터: " + ex.getParsedString());
+        errors.add(errorDetails);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, errors);
     }
 
     @ExceptionHandler(KnownException.class)
