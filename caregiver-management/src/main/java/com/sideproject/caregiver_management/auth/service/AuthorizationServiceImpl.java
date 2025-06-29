@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-@Service
+@Service("authorizationService")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthorizationServiceImpl implements AuthorizationService {
@@ -20,7 +20,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public void validateAccessToUser(Long userId) throws ForbiddenAccessException, NotFoundUserException {
-        // 본인 리스소에 대한 요청인 경우
+        // 본인 리소스에 대한 요청인 경우
         if (Objects.equals(loginSession.getUserId(), userId)) {
             return;
         }

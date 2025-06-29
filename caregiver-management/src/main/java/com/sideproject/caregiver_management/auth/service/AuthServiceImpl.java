@@ -52,7 +52,13 @@ public class AuthServiceImpl implements AuthService {
         Optional<LoginInfo> loginInfo;
         try {
             User user = authTokenService.getUserFromAccessToken(accessToken);
-            loginInfo = Optional.of(LoginInfo.builder().tenantId(user.getTenant().getId()).userId(user.getId()).build());
+            loginInfo = Optional.of(
+                    LoginInfo.builder()
+                            .tenantId(user.getTenant().getId())
+                            .userId(user.getId())
+                            .isAdmin(user.getIsAdmin())
+                            .build()
+            );
         } catch (NotFoundTokenException ex) {
             loginInfo = Optional.empty();
         }

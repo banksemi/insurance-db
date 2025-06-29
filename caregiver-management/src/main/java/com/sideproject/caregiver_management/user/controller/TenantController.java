@@ -17,7 +17,6 @@ public class TenantController {
     private final TenantService tenantService;
 
     @GetMapping("/{tenant_id}")
-    @Auth(Auth.Role.ROLE_GUEST)
     public TenantPublicInformation getTenant(@PathVariable("tenant_id") Long tenantId){
         // 모두가 조회할 수 있는 public 정보만 반환
         Tenant tenant = tenantService.findTenantById(tenantId);
