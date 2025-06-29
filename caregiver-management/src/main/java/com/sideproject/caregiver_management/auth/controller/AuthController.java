@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.auth.controller;
 
-import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.dto.RefreshTokenRequest;
 import com.sideproject.caregiver_management.auth.dto.UserLoginRequest;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Auth(Auth.Role.ROLE_GUEST)
 public class AuthController {
     private final AuthService authService;
 

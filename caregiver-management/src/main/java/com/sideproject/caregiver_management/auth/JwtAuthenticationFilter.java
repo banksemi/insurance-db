@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.auth;
 
-import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginInfo;
 import com.sideproject.caregiver_management.auth.service.AuthService;
 import jakarta.servlet.FilterChain;
@@ -50,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Optional<String> accessToken = extractToken(request);
         if (accessToken.isPresent()) {
             log.info("accessToken: {}", accessToken);
-            Optional<LoginInfo> loginInfo = authService.validateAccessToken(accessToken.get(), Auth.Role.ROLE_USER);
+            Optional<LoginInfo> loginInfo = authService.validateAccessToken(accessToken.get());
             if (loginInfo.isPresent()) {
                 loginSession.setLoginInfo(loginInfo.get());
                 List<SimpleGrantedAuthority> authorities = new ArrayList<>();

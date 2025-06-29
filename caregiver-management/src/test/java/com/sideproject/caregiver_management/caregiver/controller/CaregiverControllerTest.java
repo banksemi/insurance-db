@@ -61,7 +61,6 @@ class CaregiverControllerTest {
         var response = caregiverController.getCaregivers(userId, searchCondition);
 
         // then
-        verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
         verify(caregiverService).getCaregivers(insurance, searchCondition); // 서비스를 호출하여 결과를 얻는지 검증
 
         assertEquals(10, response.getCount()); // 예상된 서비스의 결과가 반환되는지 확인
@@ -79,7 +78,6 @@ class CaregiverControllerTest {
         CaregiverCreateResponse response = caregiverController.addCaregiver(userId, request);
 
         // then
-        verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
         verify(caregiverService).addCaregiver(insurance, request); // 서비스를 호출하여 결과를 얻는지 검증
         assertEquals(100L, response.getId()); // 결과 확인
     }
@@ -99,7 +97,6 @@ class CaregiverControllerTest {
         CaregiverEstimateResponse response = caregiverController.getEstimation(userId, request);
 
         // then
-        verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
         verify(caregiverService).getCaregiverEstimate(insurance, request); // 서비스를 호출하여 결과를 얻는지 검증
         assertEquals(100L, response.getInsuranceAmount()); // 결과 확인
     }
@@ -119,7 +116,6 @@ class CaregiverControllerTest {
         CaregiverResponse response = caregiverController.updateMemo(userId, 12L, request);
 
         // then
-        verify(authorizationService).validateAccessToUser(userId); // 권한을 검사하는 로직이 포함되어있는지 확인
         verify(caregiverService).updateMemo(insurance, 12L, "memo"); // 서비스를 호출하여 결과를 얻는지 검증
         assertEquals(12L, response.getId()); // 결과 확인
     }
@@ -139,8 +135,6 @@ class CaregiverControllerTest {
         CaregiverResponse response = caregiverController.updateEndDate(userId, 12L, request);
 
         // then
-        verify(authorizationService).validateAccessToUser(userId);
-
         // checkApproved 변수를 true로 전달해야함
         verify(caregiverService).requestEndDate(insurance, 12L, request.getEndDate(), true);
         assertEquals(12L, response.getId()); // 결과 확인

@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.auth.service;
 
-import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.auth.dto.LoginInfo;
 import com.sideproject.caregiver_management.auth.dto.LoginResponse;
 import com.sideproject.caregiver_management.auth.exception.*;
@@ -48,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<LoginInfo> validateAccessToken(String accessToken, Auth.Role role) throws NeedAuthenticationException, ForbiddenAccessException {
+    public Optional<LoginInfo> validateAccessToken(String accessToken) throws NeedAuthenticationException, ForbiddenAccessException {
         Optional<LoginInfo> loginInfo;
         try {
             User user = authTokenService.getUserFromAccessToken(accessToken);
@@ -62,13 +61,6 @@ public class AuthServiceImpl implements AuthService {
         } catch (NotFoundTokenException ex) {
             loginInfo = Optional.empty();
         }
-
-        if (loginInfo.isEmpty() && role != Auth.Role.ROLE_GUEST)
-            throw new NeedAuthenticationException();
-
-        // Todo: 어드민 권한 구현 필요, 현재는 무조건 오류로 반환
-        if (role == Auth.Role.ROLE_ADMIN)
-            throw new ForbiddenAccessException();
 
         return loginInfo;
     }

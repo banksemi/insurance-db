@@ -1,6 +1,5 @@
 package com.sideproject.caregiver_management.user.controller;
 
-import com.sideproject.caregiver_management.auth.annotation.Auth;
 import com.sideproject.caregiver_management.user.dto.TenantPublicInformation;
 import com.sideproject.caregiver_management.user.entity.Tenant;
 import com.sideproject.caregiver_management.user.service.TenantService;
