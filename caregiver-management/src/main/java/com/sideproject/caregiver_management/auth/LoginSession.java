@@ -16,9 +16,11 @@ import org.springframework.stereotype.Component;
 public class LoginSession {
     private Long tenantId;
     private Long userId;
+    private Boolean isAdmin;
 
     public void setLoginInfo(LoginInfo info) {
         setTenantId(info.getTenantId());
         setUserId(info.getUserId());
+        setIsAdmin(info.getIsAdmin());
     }
 }

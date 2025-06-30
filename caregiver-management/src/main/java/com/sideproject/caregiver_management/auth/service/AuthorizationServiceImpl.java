@@ -37,4 +37,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new NotFoundUserException();
         }
     }
+
+    @Override
+    public void validateAdmin() throws ForbiddenAccessException {
+        if (loginSession.getIsAdmin() != true) {
+            throw new ForbiddenAccessException();
+        }
+    }
+
+
 }
