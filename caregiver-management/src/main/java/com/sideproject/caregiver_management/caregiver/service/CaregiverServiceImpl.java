@@ -6,6 +6,7 @@ import com.sideproject.caregiver_management.caregiver.exception.*;
 import com.sideproject.caregiver_management.caregiver.repository.CaregiverRepository;
 import com.sideproject.caregiver_management.caregiver.service.amount.CaregiverInsuranceAmountCalculator;
 import com.sideproject.caregiver_management.caregiver.service.contract_period_calculator.CaregiverContractPeriodCalculator;
+import com.sideproject.caregiver_management.caregiver.service.mapper.CaregiverMapper;
 import com.sideproject.caregiver_management.common.dto.ListResponse;
 import com.sideproject.caregiver_management.insurance.entity.Insurance;
 import lombok.RequiredArgsConstructor;
@@ -23,27 +24,7 @@ public class CaregiverServiceImpl implements CaregiverService {
     private final CaregiverInsuranceAmountCalculator calculator;
     private final CaregiverContractPeriodCalculator contractPeriodCalculator;
     private final CaregiverRepository caregiverRepository;
-    private final CaregiverStatusService statusService;
-
-    private CaregiverResponse toDto(Caregiver caregiver) {
-        return CaregiverResponse.builder()
-                .id(caregiver.getId())
-                .name(caregiver.getName())
-                .isShared(caregiver.getIsShared())
-                .birthday(caregiver.getBirthday())
-                .genderCode(caregiver.getGenderCode())
-                .startDate(caregiver.getStartDate())
-                .endDate(caregiver.getEndDate())
-                .memo(caregiver.getMemo())
-                .insuranceAmount(caregiver.getInsuranceAmount())
-                .refundAmount(caregiver.getRefundAmount())
-                .contractDays(contractPeriodCalculator.getContractDays(caregiver))
-                .effectiveDays(contractPeriodCalculator.getEffectiveDays(caregiver).orElse(null))
-                .createdAt(caregiver.getCreatedAt())
-                .isApproved(caregiver.getIsApproved())
-                .status(statusService.getReadableStatus(caregiver))
-                .build();
-    }
+    private final CaregiverMapper caregiverMapper;
 
     private Caregiver getCaregiverEntity(Long caregiverId) throws NotFoundCaregiverException {
         Caregiver caregiver = caregiverRepository.findById(caregiverId);
@@ -56,14 +37,13 @@ public class CaregiverServiceImpl implements CaregiverService {
     @Override
     @Transactional(readOnly = true)
     public ListResponse<CaregiverResponse> getCaregivers(Insurance insurance, CaregiverSearchCondition searchCondition) {
-        List<Caregiver> caregivers = caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition);
-
-        List<CaregiverResponse> dtoList = caregivers.stream().map(this::toDto).toList(); // 자바 16 이상
-        // caregivers.forEach(caregiver -> dtoList.add(toDto(caregiver)));
+        List<CaregiverResponse> caregiverResponses = caregiverMapper.toDTO(
+                caregiverRepository.findAllByInsuranceId(insurance.getId(), searchCondition)
+        );
 
         return ListResponse.<CaregiverResponse>builder()
-                .count(dtoList.size())
-                .data(dtoList)
+                .count(caregiverResponses.size())
+                .data(caregiverResponses)
                 .build();
     }
 
@@ -75,7 +55,7 @@ public class CaregiverServiceImpl implements CaregiverService {
         if (!caregiver.getInsurance().equals(insurance))
             throw new CaregiverForbiddenException();
 
-        return toDto(caregiver);
+        return caregiverMapper.toDTO(caregiver);
     }
 
     @Override
